@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/makeBreak.Tests/makeBreak.Tests.csproj" />
+  </Folder>
+  <Project Path="makeBreak.csproj" />
+</Solution>

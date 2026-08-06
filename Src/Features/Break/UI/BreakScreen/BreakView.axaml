@@ -1,0 +1,79 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:rxui="using:Avalonia.ReactiveUI"
+             xmlns:vm="using:makeBreak.Src.Features.Break.UI.BreakScreen"
+             xmlns:res="using:makeBreak.Src.Features.Break.Resources"
+             x:Class="makeBreak.Src.Features.Break.UI.BreakScreen.BreakView"
+             x:TypeArguments="vm:BreakViewModel">
+    <UserControl.Styles>
+        <StyleInclude Source="avares://makeBreak/Src/Features/Break/UI/BreakScreen/ScreenStyles/ButtonsStyles.axaml" />
+        <StyleInclude Source="avares://makeBreak/Src/Features/Break/UI/BreakScreen/ScreenStyles/TextBlocksStyles.axaml" />
+        <StyleInclude Source="avares://makeBreak/Src/Features/Break/UI/BreakScreen/ScreenStyles/AnimationsStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="*,Auto"
+          Margin="48">
+        <Grid Grid.Row="0">
+            <Grid Width="340"
+                  Height="340"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <Ellipse x:Name="DecorativeRing"
+                         Classes="decorative-ring"
+                         Width="312"
+                         Height="312"
+                         Stroke="{DynamicResource SystemControlBackgroundAccentBrush}"
+                         StrokeThickness="3"
+                         IsHitTestVisible="False" />
+
+                <Border x:Name="CountdownCircle"
+                        Classes="countdown-circle"
+                        Width="260"
+                        Height="260"
+                        CornerRadius="130"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                        BorderBrush="{DynamicResource SystemControlBackgroundAccentBrush}"
+                        BorderThickness="4">
+
+                    <StackPanel VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Spacing="10"
+                                Margin="24">
+                        <TextBlock x:Name="CountdownNumberTextBlock"
+                                   Classes="countdown-number"
+                                   HorizontalAlignment="Center" />
+
+                        <TextBlock x:Name="CountdownCaptionTextBlock"
+                                   Text="{x:Static res:BreakStrings.CountdownCaption}"
+                                   Classes="countdown-caption"
+                                   HorizontalAlignment="Center" />
+
+                        <TextBlock x:Name="FinishedTextBlock"
+                                   Text="{x:Static res:BreakStrings.BreakFinishedLabel}"
+                                   Classes="countdown-finished"
+                                   HorizontalAlignment="Center" />
+
+                        <ProgressBar x:Name="CountdownProgressBar"
+                                     Minimum="0"
+                                     Maximum="100"
+                                     Height="8"
+                                     Margin="4,12,4,0"
+                                     VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,0,32">
+            <Button x:Name="ConfirmBreakButton"
+                    Classes="primary"
+                    Content="{x:Static res:BreakStrings.ConfirmBreakButton}"
+                    HorizontalAlignment="Center" />
+        </StackPanel>
+    </Grid>
+</rxui:ReactiveUserControl>

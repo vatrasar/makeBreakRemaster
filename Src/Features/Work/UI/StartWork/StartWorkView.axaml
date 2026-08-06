@@ -1,0 +1,31 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:rxui="using:Avalonia.ReactiveUI"
+             xmlns:vm="using:makeBreak.Src.Features.Work.UI.StartWork"
+             xmlns:res="using:makeBreak.Src.Features.Work.Resources"
+             x:Class="makeBreak.Src.Features.Work.UI.StartWork.StartWorkView"
+             x:TypeArguments="vm:StartWorkViewModel">
+    <UserControl.Styles>
+        <StyleInclude Source="avares://makeBreak/Src/Features/Work/UI/StartWork/ScreenStyles/ButtonsStyles.axaml" />
+    </UserControl.Styles>
+
+    <Border CornerRadius="24"
+            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+            Padding="48"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+        <StackPanel Spacing="28"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <Image x:Name="AppIconImage"
+                   Source="avares://makeBreak/Assets/ikona.png"
+                   Width="96"
+                   Height="96" />
+
+            <Button x:Name="StartWorkButton"
+                    Classes="primary"
+                    Content="{x:Static res:WorkStrings.StartWorkButton}"
+                    HorizontalAlignment="Center" />
+        </StackPanel>
+    </Border>
+</rxui:ReactiveUserControl>

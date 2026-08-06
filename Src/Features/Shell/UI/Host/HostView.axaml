@@ -1,0 +1,8 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:rxui="using:Avalonia.ReactiveUI"
+             xmlns:vm="using:makeBreak.Src.Features.Shell.UI.Host"
+             x:Class="makeBreak.Src.Features.Shell.UI.Host.HostView"
+             x:TypeArguments="vm:MainShellViewModel">
+    <rxui:RoutedViewHost x:Name="HostRoutedViewHost" />
+</rxui:ReactiveUserControl>

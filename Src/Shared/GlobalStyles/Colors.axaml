@@ -1,0 +1,7 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="ErrorColor" Color="{DynamicResource SystemErrorColor}" />
+    <SolidColorBrush x:Key="OnErrorColor" Color="{DynamicResource SystemOnErrorColor}" />
+    <SolidColorBrush x:Key="SuccessColor" Color="{DynamicResource SystemSuccessColor}" />
+    <SolidColorBrush x:Key="OnSuccessColor" Color="{DynamicResource SystemOnSuccessColor}" />
+</ResourceDictionary>

@@ -1,0 +1,12 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="using:makeBreak.Src.Features.Shell.UI.Host"
+        xmlns:shellres="using:makeBreak.Src.Features.Shell.Resources"
+        x:Class="makeBreak.Src.Features.Shell.MainWindow"
+        Title="{x:Static shellres:ShellStrings.MainWindowTitle}"
+        Icon="/Assets/ikona.png"
+        Width="360"
+        Height="420"
+        WindowStartupLocation="CenterScreen">
+    <shell:HostView x:Name="HostView" />
+</Window>

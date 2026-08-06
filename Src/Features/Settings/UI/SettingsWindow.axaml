@@ -1,0 +1,59 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="using:makeBreak.Src.Features.Settings.Resources"
+        xmlns:gres="using:makeBreak.Src.Shared.Resources"
+        x:Class="makeBreak.Src.Features.Settings.UI.SettingsWindow"
+        Title="{x:Static res:SettingsStrings.WindowTitle}"
+        Icon="/Assets/ikona.png"
+        Width="420"
+        Height="340"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        ShowInTaskbar="False">
+    <Window.Styles>
+        <StyleInclude Source="avares://makeBreak/Src/Features/Settings/UI/ScreenStyles/ButtonsStyles.axaml" />
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto"
+          Margin="24"
+          RowSpacing="12">
+
+        <TextBlock Grid.Row="0" Text="{x:Static res:SettingsStrings.WindowTitle}"
+                   FontSize="24"
+                   FontWeight="SemiBold" />
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="12">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="{x:Static res:SettingsStrings.TimeToStartLongBreakLabel}" />
+                    <NumericUpDown x:Name="TimeToStartLongBreakInput" Minimum="1" Increment="1" />
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{x:Static res:SettingsStrings.TimeForLongBreakLabel}" />
+                    <NumericUpDown x:Name="TimeForLongBreakInput" Minimum="1" Increment="1" />
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{x:Static res:SettingsStrings.TimeToStartShortBreakLabel}" />
+                    <NumericUpDown x:Name="TimeToStartShortBreakInput" Minimum="1" Increment="1" />
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{x:Static res:SettingsStrings.TimeForShortBreakLabel}" />
+                    <NumericUpDown x:Name="TimeForShortBreakInput" Minimum="1" Increment="1" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="12"
+                    Margin="0,12,0,0">
+            <Button x:Name="CancelButton" Classes="ghost" Content="{x:Static gres:GlobalStrings.CancelButton}" />
+            <Button x:Name="OkButton" Classes="primary" Content="{x:Static gres:GlobalStrings.OkButton}" />
+        </StackPanel>
+    </Grid>
+</Window>

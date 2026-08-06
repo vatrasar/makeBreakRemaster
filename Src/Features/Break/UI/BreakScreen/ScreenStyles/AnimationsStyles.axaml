@@ -1,0 +1,32 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Ellipse.decorative-ring">
+        <Style.Animations>
+            <Animation Duration="0:0:3"
+                       IterationCount="Infinite"
+                       PlaybackDirection="Alternate">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.3" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="0.9" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <Style Selector="Border.countdown-circle">
+        <Style.Animations>
+            <Animation Duration="0:0:2.4"
+                       IterationCount="Infinite"
+                       PlaybackDirection="Alternate">
+                <KeyFrame Cue="0%">
+                    <Setter Property="Opacity" Value="0.85" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="Opacity" Value="1" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+</Styles>

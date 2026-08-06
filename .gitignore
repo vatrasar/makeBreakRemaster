@@ -1,0 +1,29 @@
+# .NET build artifacts
+bin/
+obj/
+*.nupkg
+*.snupkg
+*.user
+
+# Publish output (self-contained release binaries + deb packages)
+publish/
+packaging/*.deb
+
+# Rider / IDEs
+.idea/
+.vs/
+.vscode/
+*.userosscache
+*.sln.docstates
+
+# Test results
+TestResults/
+*.trx
+coverage.*
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

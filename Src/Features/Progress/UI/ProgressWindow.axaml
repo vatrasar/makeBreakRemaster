@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="using:makeBreak.Src.Features.Progress.Resources"
+        x:Class="makeBreak.Src.Features.Progress.UI.ProgressWindow"
+        Title="{x:Static res:ProgressStrings.WindowTitle}"
+        Icon="/Assets/ikona.png"
+        Width="380"
+        Height="220"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        ShowInTaskbar="False">
+    <Window.Styles>
+        <StyleInclude Source="avares://makeBreak/Src/Features/Progress/UI/ScreenStyles/TextBlocksStyles.axaml" />
+    </Window.Styles>
+
+    <Border Margin="28"
+            CornerRadius="14">
+        <StackPanel Spacing="20" VerticalAlignment="Center">
+            <StackPanel Spacing="8">
+                <TextBlock Classes="metric-label" Text="{x:Static res:ProgressStrings.ShortIntervalLabel}" />
+                <ProgressBar x:Name="ShortProgressBar" Minimum="0" Maximum="100" Height="18" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock Classes="metric-label" Text="{x:Static res:ProgressStrings.LongIntervalLabel}" />
+                <ProgressBar x:Name="LongProgressBar" Minimum="0" Maximum="100" Height="18" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>
