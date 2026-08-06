@@ -148,4 +148,4 @@ The project is being rewritten from an original Python (PyQt5) version to Avalon
 
 ## 📄 License
 
-Add a license (e.g. MIT) before publishing.
+Distributed under the [MIT License](LICENSE).
