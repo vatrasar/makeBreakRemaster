@@ -14,8 +14,8 @@ namespace makeBreak.Src.Features.Statistics.UI;
 /// current month split into weeks, or last twelve months split by month) and the
 /// period total, read from the SQLite-backed work time database. The period is
 /// selected with the segmented control at the top.
-/// Key UI elements: period segmented control, bar list with proportional progress bars,
-/// and the period total label.
+/// Key UI elements: period segmented control with a stable appearance on hover, bar
+/// list with proportional progress bars, and the period total label.
 /// Navigate From: system tray menu (Statystyki).
 /// Navigate To: none.
 /// </summary>

@@ -23,12 +23,33 @@
                 <BrushTransition Property="Foreground" Duration="0:0:0.12" />
             </Transitions>
         </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border
+                        Name="SegmentRoot"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Foreground="{TemplateBinding Foreground}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Padding="{TemplateBinding Padding}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
+
+    <Style Selector="RadioButton.segment:pointerover:unchecked">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListLowBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+    </Style>
+
     <Style Selector="RadioButton.segment:checked">
         <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundAltHighBrush}" />
-    </Style>
-    <Style Selector="RadioButton.segment:checked /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}" />
     </Style>
 </Styles>
