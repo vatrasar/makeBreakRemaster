@@ -18,26 +18,26 @@
   </data>
 
   <data name="TraySettings" xml:space="preserve">
-    <value>Ustawienia</value>
+    <value>Settings</value>
   </data>
 
   <data name="TrayShowProgress" xml:space="preserve">
-    <value>Pokaż postęp</value>
+    <value>Show progress</value>
   </data>
 
   <data name="TrayShowStatistics" xml:space="preserve">
-    <value>Statystyki</value>
+    <value>Statistics</value>
   </data>
 
   <data name="TrayStop" xml:space="preserve">
-    <value>Zatrzymaj</value>
+    <value>Stop</value>
   </data>
 
   <data name="TrayResume" xml:space="preserve">
-    <value>Wznów</value>
+    <value>Resume</value>
   </data>
 
   <data name="TrayExit" xml:space="preserve">
-    <value>exit</value>
+    <value>Exit</value>
   </data>
 </root>

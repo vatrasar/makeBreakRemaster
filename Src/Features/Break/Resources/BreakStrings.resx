@@ -14,18 +14,18 @@
   </resheader>
 
   <data name="CountdownLabel" xml:space="preserve">
-    <value>Czas do zakończenia przerwy: {0}</value>
+    <value>Time until the break ends: {0}</value>
   </data>
 
   <data name="CountdownCaption" xml:space="preserve">
-    <value>Do końca przerwy</value>
+    <value>Until the end of the break</value>
   </data>
 
   <data name="BreakFinishedLabel" xml:space="preserve">
-    <value>Możesz rozpocząć pracę!</value>
+    <value>You can start working!</value>
   </data>
 
   <data name="ConfirmBreakButton" xml:space="preserve">
-    <value>Zakończono przerwę</value>
+    <value>Break finished</value>
   </data>
 </root>

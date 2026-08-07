@@ -7,7 +7,7 @@ namespace makeBreak.Src.Features.Settings.UI;
 /// Settings dialog.
 /// Purpose: lets the user configure the four break schedule values.
 /// Key UI elements: four NumericUpDown inputs, OK/Cancel buttons.
-/// Navigate From: system tray menu (Ustawienia).
+/// Navigate From: system tray menu (Settings).
 /// Navigate To: none.
 /// </summary>
 public partial class SettingsWindow : ReactiveWindow<SettingsViewModel>

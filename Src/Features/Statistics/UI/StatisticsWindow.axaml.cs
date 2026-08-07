@@ -16,7 +16,7 @@ namespace makeBreak.Src.Features.Statistics.UI;
 /// selected with the segmented control at the top.
 /// Key UI elements: period segmented control with a stable appearance on hover, bar
 /// list with proportional progress bars, and the period total label.
-/// Navigate From: system tray menu (Statystyki).
+/// Navigate From: system tray menu (Statistics).
 /// Navigate To: none.
 /// </summary>
 public partial class StatisticsWindow : ReactiveWindow<StatisticsViewModel>

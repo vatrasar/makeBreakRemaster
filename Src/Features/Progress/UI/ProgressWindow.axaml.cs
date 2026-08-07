@@ -7,7 +7,7 @@ namespace makeBreak.Src.Features.Progress.UI;
 /// Progress dialog.
 /// Purpose: shows live progress of the short and long work intervals.
 /// Key UI elements: two progress bars.
-/// Navigate From: system tray menu (Pokaż postęp).
+/// Navigate From: system tray menu (Show progress).
 /// Navigate To: none.
 /// </summary>
 public partial class ProgressWindow : ReactiveWindow<ProgressViewModel>

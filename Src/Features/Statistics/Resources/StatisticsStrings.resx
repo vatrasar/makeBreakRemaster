@@ -14,30 +14,30 @@
   </resheader>
 
   <data name="WindowTitle" xml:space="preserve">
-    <value>Statystyki czasu pracy</value>
+    <value>Work time statistics</value>
   </data>
 
   <data name="LastDaysLabel" xml:space="preserve">
-    <value>Ostatnie 7 dni</value>
+    <value>Last 7 days</value>
   </data>
 
   <data name="LastMonthsLabel" xml:space="preserve">
-    <value>Ostatnie 12 miesięcy</value>
+    <value>Last 12 months</value>
   </data>
 
   <data name="WeekPeriodLabel" xml:space="preserve">
-    <value>Tydzień</value>
+    <value>Week</value>
   </data>
 
   <data name="MonthPeriodLabel" xml:space="preserve">
-    <value>Miesiąc</value>
+    <value>Month</value>
   </data>
 
   <data name="YearPeriodLabel" xml:space="preserve">
-    <value>Rok</value>
+    <value>Year</value>
   </data>
 
   <data name="TotalTimeFormat" xml:space="preserve">
-    <value>Łączny czas pracy: {0}</value>
+    <value>Total work time: {0}</value>
   </data>
 </root>

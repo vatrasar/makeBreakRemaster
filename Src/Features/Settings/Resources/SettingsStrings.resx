@@ -14,22 +14,22 @@
   </resheader>
 
   <data name="WindowTitle" xml:space="preserve">
-    <value>Ustawienia</value>
+    <value>Settings</value>
   </data>
 
   <data name="TimeToStartLongBreakLabel" xml:space="preserve">
-    <value>Czas pomiędzy długimi przerwami (minuty)</value>
+    <value>Time between long breaks (minutes)</value>
   </data>
 
   <data name="TimeForLongBreakLabel" xml:space="preserve">
-    <value>Czas długiej przerwy (minuty)</value>
+    <value>Long break duration (minutes)</value>
   </data>
 
   <data name="TimeToStartShortBreakLabel" xml:space="preserve">
-    <value>Czas pomiędzy krótkimi przerwami (minuty)</value>
+    <value>Time between short breaks (minutes)</value>
   </data>
 
   <data name="TimeForShortBreakLabel" xml:space="preserve">
-    <value>Czas krótkiej przerwy (sekundy)</value>
+    <value>Short break duration (seconds)</value>
   </data>
 </root>

@@ -6,7 +6,7 @@ namespace makeBreak.Src.Features.Shell;
 
 /// <summary>
 /// Keeps the tray menu enabled states in sync with the break schedule.
-/// "Zatrzymaj" is enabled while working; "Wznów" is enabled while paused.
+/// "Stop" is enabled while working; "Resume" is enabled while paused.
 /// </summary>
 public sealed class TrayState
 {

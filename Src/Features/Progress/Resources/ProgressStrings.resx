@@ -14,14 +14,14 @@
   </resheader>
 
   <data name="WindowTitle" xml:space="preserve">
-    <value>Aktualny plan</value>
+    <value>Current plan</value>
   </data>
 
   <data name="ShortIntervalLabel" xml:space="preserve">
-    <value>Wykonanie krótkiego czasu pracy</value>
+    <value>Short work interval progress</value>
   </data>
 
   <data name="LongIntervalLabel" xml:space="preserve">
-    <value>Wykonanie długiego czasu pracy</value>
+    <value>Long work interval progress</value>
   </data>
 </root>
