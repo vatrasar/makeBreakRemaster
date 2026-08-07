@@ -177,7 +177,7 @@ public sealed class BreakScheduler : IBreakScheduler
 
     private bool CanScheduleShortBreak()
     {
-        return _config.TimeToStartLongBreak - _longWorkSeconds - _config.TimeToStartShortBreak - _config.TimeForShortBreak > 0;
+        return _config.TimeToStartLongBreak - _longWorkSeconds - _config.TimeForShortBreak > 0;
     }
 
     private void SetState(SessionState newState)

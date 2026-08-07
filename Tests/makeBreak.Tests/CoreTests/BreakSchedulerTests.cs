@@ -251,6 +251,37 @@ public class BreakSchedulerTests
         Assert.Equal(SessionState.Paused, scheduler.State);
     }
 
+    [Fact]
+    public void ShortBreak_notSkippedWhenItStillFitsBeforeLongBreak()
+    {
+        BreakConfig config = new()
+        {
+            TimeToStartLongBreak = 14,
+            TimeForLongBreak = 2,
+            TimeToStartShortBreak = 4,
+            TimeForShortBreak = 2,
+        };
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(config);
+        scheduler.Start();
+        int shortBreaks = 0;
+        scheduler.BreakStarted += (_, _) =>
+        {
+            if (scheduler.CurrentBreakKind == BreakKind.Short) shortBreaks++;
+        };
+
+        for (int i = 0; i < config.TimeToStartLongBreak; i++)
+        {
+            scheduler.Tick();
+            if (scheduler.State == SessionState.OnShortBreak && scheduler.CanConfirmBreak)
+            {
+                scheduler.ConfirmBreak();
+            }
+        }
+
+        Assert.Equal(2, shortBreaks);
+    }
+
     private static void TickFor(BreakScheduler scheduler, int seconds)
     {
         for (int i = 0; i < seconds; i++)

@@ -13,31 +13,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 
-  <data name="MainWindowTitle" xml:space="preserve">
-    <value>makeBreak</value>
+  <data name="WindowTitle" xml:space="preserve">
+    <value>Statystyki czasu pracy</value>
   </data>
 
-  <data name="TraySettings" xml:space="preserve">
-    <value>Ustawienia</value>
+  <data name="LastDaysLabel" xml:space="preserve">
+    <value>Ostatnie 7 dni</value>
   </data>
 
-  <data name="TrayShowProgress" xml:space="preserve">
-    <value>Pokaż postęp</value>
+  <data name="LastMonthsLabel" xml:space="preserve">
+    <value>Ostatnie 12 miesięcy</value>
   </data>
 
-  <data name="TrayShowStatistics" xml:space="preserve">
-    <value>Statystyki</value>
+  <data name="WeekPeriodLabel" xml:space="preserve">
+    <value>Tydzień</value>
   </data>
 
-  <data name="TrayStop" xml:space="preserve">
-    <value>Zatrzymaj</value>
+  <data name="MonthPeriodLabel" xml:space="preserve">
+    <value>Miesiąc</value>
   </data>
 
-  <data name="TrayResume" xml:space="preserve">
-    <value>Wznów</value>
+  <data name="YearPeriodLabel" xml:space="preserve">
+    <value>Rok</value>
   </data>
 
-  <data name="TrayExit" xml:space="preserve">
-    <value>exit</value>
+  <data name="TotalTimeFormat" xml:space="preserve">
+    <value>Łączny czas pracy: {0}</value>
   </data>
 </root>

@@ -4,16 +4,19 @@ using makeBreak.Src.Core.Domain.Services;
 namespace makeBreak.Src.Infrastructure.Navigation;
 
 /// <summary>
-/// Drives the break schedule one tick per second while the application runs.
+/// Drives the break schedule one tick per second while the application runs
+/// and records each working second as work time.
 /// </summary>
 public sealed class BreakTicker : IDisposable
 {
     private readonly BreakCoordinator _coordinator;
+    private readonly WorkTimeService _workTimeService;
     private readonly DispatcherTimer _timer;
 
-    public BreakTicker(BreakCoordinator coordinator)
+    public BreakTicker(BreakCoordinator coordinator, WorkTimeService workTimeService)
     {
         _coordinator = coordinator;
+        _workTimeService = workTimeService;
         _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _timer.Tick += OnTick;
     }
@@ -26,5 +29,9 @@ public sealed class BreakTicker : IDisposable
 
     public void Start() => _timer.Start();
 
-    private void OnTick(object? sender, EventArgs e) => _coordinator.Tick();
+    private void OnTick(object? sender, EventArgs e)
+    {
+        _workTimeService.RecordWorkSecond();
+        _coordinator.Tick();
+    }
 }

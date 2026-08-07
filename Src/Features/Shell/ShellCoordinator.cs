@@ -5,6 +5,7 @@ using makeBreak.Src.Core.Domain.Enums;
 using makeBreak.Src.Core.Domain.Services;
 using makeBreak.Src.Features.Progress.UI;
 using makeBreak.Src.Features.Settings.UI;
+using makeBreak.Src.Features.Statistics.UI;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace makeBreak.Src.Features.Shell;
@@ -13,7 +14,7 @@ namespace makeBreak.Src.Features.Shell;
 /// Coordinates window lifecycle and tray actions with the break schedule.
 /// Shows the main window (with start-work screen) on startup, hides it while
 /// working, shows it fullscreen during a break, and hides it again after the
-/// break is confirmed. Also opens the settings and progress dialogs.
+/// break is confirmed. Also opens the settings, progress and statistics dialogs.
 /// </summary>
 public sealed class ShellCoordinator
 {
@@ -54,6 +55,8 @@ public sealed class ShellCoordinator
     }
 
     public void ShowProgress() => _services.GetRequiredService<ProgressWindow>().Show();
+
+    public void ShowStatistics() => _services.GetRequiredService<StatisticsWindow>().Show();
 
     public void StartWork() => _coordinator.StartWork();
 

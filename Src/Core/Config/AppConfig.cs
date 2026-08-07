@@ -13,4 +13,6 @@ public sealed class AppConfig
     public int TimeToStartShortBreakSeconds { get; set; } = 300;
 
     public string ConfigFileName { get; set; } = "conf.txt";
+
+    public string WorkTimeDatabaseFileName { get; set; } = "worktime.db";
 }

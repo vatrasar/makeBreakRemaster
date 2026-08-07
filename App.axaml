@@ -23,6 +23,7 @@
                     <NativeMenu>
                         <NativeMenuItem Header="{x:Static shellres:ShellStrings.TraySettings}" Click="TraySettings_OnClick" />
                         <NativeMenuItem Header="{x:Static shellres:ShellStrings.TrayShowProgress}" Click="TrayShowProgress_OnClick" />
+                        <NativeMenuItem Header="{x:Static shellres:ShellStrings.TrayShowStatistics}" Click="TrayShowStatistics_OnClick" />
                         <NativeMenuItemSeparator />
                         <NativeMenuItem Header="{x:Static shellres:ShellStrings.TrayStop}" IsEnabled="False" Click="TrayStop_OnClick" />
                         <NativeMenuItem Header="{x:Static shellres:ShellStrings.TrayResume}" IsEnabled="False" Click="TrayResume_OnClick" />

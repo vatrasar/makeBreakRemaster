@@ -1,0 +1,90 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:res="using:makeBreak.Src.Features.Statistics.Resources"
+        xmlns:models="using:makeBreak.Src.Features.Statistics.Domain.Models"
+        x:Class="makeBreak.Src.Features.Statistics.UI.StatisticsWindow"
+        Title="{x:Static res:StatisticsStrings.WindowTitle}"
+        Icon="/Assets/ikona.png"
+        Width="540"
+        Height="480"
+        MinWidth="520"
+        MinHeight="480"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False">
+    <Window.Styles>
+        <StyleInclude Source="avares://makeBreak/Src/Features/Statistics/UI/ScreenStyles/ButtonsStyles.axaml" />
+        <StyleInclude Source="avares://makeBreak/Src/Features/Statistics/UI/ScreenStyles/TextBlocksStyles.axaml" />
+        <StyleInclude Source="avares://makeBreak/Src/Features/Statistics/UI/ScreenStyles/BarsStyles.axaml" />
+    </Window.Styles>
+
+    <Border Margin="24"
+            CornerRadius="18"
+            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1">
+        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16" Margin="22">
+            <Border Classes="segment-container" HorizontalAlignment="Center">
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
+                    <RadioButton x:Name="WeekPeriodButton"
+                                 Classes="segment"
+                                 GroupName="Period"
+                                 Content="{x:Static res:StatisticsStrings.WeekPeriodLabel}"
+                                 Grid.Column="0" />
+                    <RadioButton x:Name="MonthPeriodButton"
+                                 Classes="segment"
+                                 GroupName="Period"
+                                 Content="{x:Static res:StatisticsStrings.MonthPeriodLabel}"
+                                 Grid.Column="1" />
+                    <RadioButton x:Name="YearPeriodButton"
+                                 Classes="segment"
+                                 GroupName="Period"
+                                 Content="{x:Static res:StatisticsStrings.YearPeriodLabel}"
+                                 Grid.Column="2" />
+                </Grid>
+            </Border>
+
+            <TextBlock x:Name="SectionTitleTextBlock"
+                       Grid.Row="1"
+                       Classes="section-title"
+                       HorizontalAlignment="Center" />
+
+            <ScrollViewer Grid.Row="2">
+                <ItemsControl x:Name="BarsList" Margin="0,4,0,0" Grid.IsSharedSizeScope="True">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="14" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="models:WorkBarEntry">
+                            <Grid ColumnSpacing="14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DayLabelColumn" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="TimeColumn" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Label}" Classes="day-label" VerticalAlignment="Center" />
+                                <ProgressBar Grid.Column="1"
+                                             Minimum="0"
+                                             Maximum="100"
+                                             Value="{Binding BarPercent}"
+                                             Classes.work-bar="True"
+                                             Classes.best="{Binding IsBest}"
+                                             VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding WorkTimeLabel}"
+                                           Classes="day-time"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <TextBlock x:Name="TotalTimeTextBlock"
+                       Grid.Row="3"
+                       Classes="total-label"
+                       HorizontalAlignment="Center" />
+        </Grid>
+    </Border>
+</Window>

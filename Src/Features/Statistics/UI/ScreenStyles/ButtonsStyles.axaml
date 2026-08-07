@@ -1,0 +1,34 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Border.segment-container">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="4" />
+    </Style>
+
+    <Style Selector="RadioButton.segment">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="18,10" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="RadioButton.segment:checked">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundAltHighBrush}" />
+    </Style>
+    <Style Selector="RadioButton.segment:checked /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundAccentBrush}" />
+    </Style>
+</Styles>

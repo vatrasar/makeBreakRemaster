@@ -5,8 +5,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using makeBreak.Src.Features.Shell;
 using makeBreak.Src.Features.Shell.Resources;
+using makeBreak.Src.Infrastructure.Data;
 using makeBreak.Src.Infrastructure.DependencyInjection;
 using makeBreak.Src.Infrastructure.Navigation;
+using makeBreak.Src.Core.Domain.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
@@ -29,6 +31,9 @@ public partial class App : Application
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             IServiceProvider services = BuildServiceProvider();
+
+            services.GetRequiredService<DatabaseInitializer>().Initialize();
+            services.GetRequiredService<WorkTimeService>().Cleanup();
 
             _coordinator = services.GetRequiredService<ShellCoordinator>();
 
@@ -66,6 +71,8 @@ public partial class App : Application
 
     private void TrayShowProgress_OnClick(object? sender, EventArgs e) => _coordinator?.ShowProgress();
 
+    private void TrayShowStatistics_OnClick(object? sender, EventArgs e) => _coordinator?.ShowStatistics();
+
     private void TrayStop_OnClick(object? sender, EventArgs e) => _coordinator?.Stop();
 
     private void TrayResume_OnClick(object? sender, EventArgs e) => _coordinator?.Resume();
@@ -84,6 +91,8 @@ public partial class App : Application
 
         string configFilePath = System.IO.Path.Combine(configDirectory, configuration["AppConfig:ConfigFileName"] ?? "conf.txt");
 
-        return AppBootstrapper.BuildServiceProvider(services => services.AddApplicationServices(configuration, configFilePath));
+        string databaseFilePath = System.IO.Path.Combine(configDirectory, configuration["AppConfig:WorkTimeDatabaseFileName"] ?? "worktime.db");
+
+        return AppBootstrapper.BuildServiceProvider(services => services.AddApplicationServices(configuration, configFilePath, databaseFilePath));
     }
 }

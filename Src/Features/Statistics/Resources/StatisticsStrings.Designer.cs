@@ -7,20 +7,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace makeBreak.Src.Features.Shell.Resources
+namespace makeBreak.Src.Features.Statistics.Resources
 {
     using System;
 
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ShellStrings
+    public class StatisticsStrings
     {
         private static global::System.Resources.ResourceManager resourceMan;
         private static global::System.Globalization.CultureInfo resourceCulture;
 
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public ShellStrings()
+        internal StatisticsStrings()
         {
         }
 
@@ -31,7 +31,7 @@ namespace makeBreak.Src.Features.Shell.Resources
             {
                 if (object.ReferenceEquals(resourceMan, null))
                 {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("makeBreak.Src.Features.Shell.Resources.ShellStrings", typeof(ShellStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("makeBreak.Src.Features.Statistics.Resources.StatisticsStrings", typeof(StatisticsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -45,39 +45,39 @@ namespace makeBreak.Src.Features.Shell.Resources
             set { resourceCulture = value; }
         }
 
-        public static string MainWindowTitle
+        public static string WindowTitle
         {
-            get { return ResourceManager.GetString("MainWindowTitle", resourceCulture); }
+            get { return ResourceManager.GetString("WindowTitle", resourceCulture); }
         }
 
-        public static string TraySettings
+        public static string LastDaysLabel
         {
-            get { return ResourceManager.GetString("TraySettings", resourceCulture); }
+            get { return ResourceManager.GetString("LastDaysLabel", resourceCulture); }
         }
 
-        public static string TrayShowProgress
+        public static string LastMonthsLabel
         {
-            get { return ResourceManager.GetString("TrayShowProgress", resourceCulture); }
+            get { return ResourceManager.GetString("LastMonthsLabel", resourceCulture); }
         }
 
-        public static string TrayShowStatistics
+        public static string WeekPeriodLabel
         {
-            get { return ResourceManager.GetString("TrayShowStatistics", resourceCulture); }
+            get { return ResourceManager.GetString("WeekPeriodLabel", resourceCulture); }
         }
 
-        public static string TrayStop
+        public static string MonthPeriodLabel
         {
-            get { return ResourceManager.GetString("TrayStop", resourceCulture); }
+            get { return ResourceManager.GetString("MonthPeriodLabel", resourceCulture); }
         }
 
-        public static string TrayResume
+        public static string YearPeriodLabel
         {
-            get { return ResourceManager.GetString("TrayResume", resourceCulture); }
+            get { return ResourceManager.GetString("YearPeriodLabel", resourceCulture); }
         }
 
-        public static string TrayExit
+        public static string TotalTimeFormat
         {
-            get { return ResourceManager.GetString("TrayExit", resourceCulture); }
+            get { return ResourceManager.GetString("TotalTimeFormat", resourceCulture); }
         }
     }
 }
