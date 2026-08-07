@@ -23,6 +23,8 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{DynamicResource SystemControlBackgroundAccentBrush}" />
         <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="MaxWidth" Value="200" />
     </Style>
     <Style Selector="TextBlock.header">
         <Setter Property="FontFamily" Value="{StaticResource HeaderFont}" />
