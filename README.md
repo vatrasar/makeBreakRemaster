@@ -27,7 +27,9 @@ C# / Avalonia / ReactiveUI / .NET 10
   - time between short breaks (minutes),
   - time between long breaks (minutes).
 - **Progress window** — progress bars showing the current state of the short and long work intervals.
-- **Config persistence** — settings are persisted to a `conf.txt` file.
+- **Work time tracking** — completed breaks are recorded **per day** in a SQLite database, building up your work history.
+- **Statistics window** — visualizes your work history as per-day bars (progress + total time), with **Week / Month / Year** period views and a highlight for your best day.
+- **Config persistence** — settings are persisted to a `conf.txt` file in the per-user data folder.
 - **Startup integration** — intended to run as a startup program (e.g. Ubuntu "Startup Applications").
 
 ---
@@ -42,8 +44,8 @@ project/
 ├── Assets/                          # Resources (icons)
 ├── Src/
 │   ├── Core/                         # Models, enums, services, contracts, MVVM
-│   ├── Features/                     # Break, Progress, Settings, Shell, Work
-│   ├── Infrastructure/               # Navigation, DI, config repository
+│   ├── Features/                     # Break, Progress, Settings, Shell, Statistics, Work
+│   ├── Infrastructure/               # Navigation, DI, EF Core, config repository
 │   └── Shared/                       # Global styles and strings
 ├── Tests/makeBreak.Tests/           # Unit tests (xUnit)
 └── packaging/build-deb.sh           # Debian package build script
@@ -52,7 +54,7 @@ project/
 - **Navigation & reactivity** — ReactiveUI routing plus the MVI-like state pattern (`ViewModelBase<TState>`).
 - **Dependency injection** — `Microsoft.Extensions.DependencyInjection`.
 - **Configuration** — `Microsoft.Extensions.Configuration` via the `IOptions<T>` pattern; values live in `appsettings.json`.
-- **Database** — Entity Framework Core with SQLite.
+- **Database** — Entity Framework Core with SQLite (stored in the per-user data folder).
 - **UI look** — FluentTheme with custom palettes and Light/Dark mode support.
 
 ---
