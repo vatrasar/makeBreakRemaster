@@ -107,7 +107,7 @@ public class BreakSchedulerTests
     }
 
     [Fact]
-    public void LongBreak_triggersOncePerWorkSession()
+    public void LongBreak_recurrsAfterConfirmation()
     {
         BreakConfig config = new()
         {
@@ -137,7 +137,43 @@ public class BreakSchedulerTests
 
         TickFor(scheduler, config.TimeToStartLongBreak);
 
-        Assert.Equal(1, longBreaks);
+        Assert.Equal(2, longBreaks);
+    }
+
+    [Fact]
+    public void Schedule_keepsRunningAfterLongBreakConfirmation()
+    {
+        BreakConfig config = new()
+        {
+            TimeToStartLongBreak = 100,
+            TimeForLongBreak = 20,
+            TimeToStartShortBreak = 30,
+            TimeForShortBreak = 10,
+        };
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(config);
+        scheduler.Start();
+        int longBreaks = 0;
+        int shortBreaks = 0;
+        scheduler.BreakStarted += (_, _) =>
+        {
+            if (scheduler.CurrentBreakKind == BreakKind.Long) longBreaks++;
+            else shortBreaks++;
+        };
+
+        for (int tick = 0; tick < 320; tick++)
+        {
+            scheduler.Tick();
+
+            if (scheduler.State is SessionState.OnShortBreak or SessionState.OnLongBreak && scheduler.CanConfirmBreak)
+            {
+                scheduler.ConfirmBreak();
+            }
+        }
+
+        Assert.Equal(2, longBreaks);
+        Assert.True(shortBreaks >= 2);
+        Assert.Equal(SessionState.Working, scheduler.State);
     }
 
     [Fact]

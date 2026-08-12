@@ -116,6 +116,12 @@ public sealed class BreakScheduler : IBreakScheduler
         }
 
         ResetCountersAfterBreak();
+
+        if (_currentBreakKind == BreakKind.Long)
+        {
+            _longBreakConsumed = false;
+        }
+
         _canConfirmBreak = false;
         SetState(SessionState.Working);
         BreakEnded?.Invoke(this, EventArgs.Empty);
