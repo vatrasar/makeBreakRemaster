@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="Assets/ikona.svg" alt="makeBreak icon" width="128" height="128" />
+
 # ⏳ makeBreak
 
 **A desktop break-time manager that confirms when your break is over.**
@@ -41,7 +43,7 @@ A feature-oriented architecture with clean layers:
 ```
 project/
 ├── App.axaml / App.axaml.cs        # App startup, configuration, tray
-├── Assets/                          # Resources (icons)
+├── Assets/                          # Resources (vector icon ikona.svg and ikona.png)
 ├── Src/
 │   ├── Core/                         # Models, enums, services, contracts, MVVM
 │   ├── Features/                     # Break, Progress, Settings, Shell, Statistics, Work

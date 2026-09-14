@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+
+    <!-- Top Highlight -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.65" />
+      <stop offset="30%" stop-color="#93C5FD" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.05" />
+    </linearGradient>
+
+    <!-- Mug Ceramic Gradient -->
+    <linearGradient id="mugGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="65%" stop-color="#F8FAFC" />
+      <stop offset="100%" stop-color="#E2E8F0" />
+    </linearGradient>
+
+    <!-- Handle Gradient -->
+    <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </linearGradient>
+
+    <!-- Coffee Liquid -->
+    <radialGradient id="coffeeSurface" cx="42%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#EA580C" />
+      <stop offset="45%" stop-color="#B45309" />
+      <stop offset="100%" stop-color="#78350F" />
+    </radialGradient>
+
+    <!-- Steam Gradient -->
+    <linearGradient id="steamGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#BAE6FD" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Pause Icon Accent (Vivid Blue) -->
+    <linearGradient id="pauseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#1E40AF" />
+    </linearGradient>
+
+    <!-- Ambient Glow behind cup -->
+    <radialGradient id="ambSphere" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#93C5FD" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#1D4ED8" stop-opacity="0.0" />
+    </radialGradient>
+
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="20" flood-color="#0F172A" flood-opacity="0.4" />
+    </filter>
+
+    <filter id="mugShadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#0F172A" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect x="32" y="32" width="448" height="448" rx="108" fill="url(#bgGrad)" filter="url(#cardShadow)" />
+  <rect x="32" y="32" width="448" height="448" rx="108" fill="none" stroke="url(#borderGrad)" stroke-width="3" />
+  <rect x="32" y="32" width="448" height="448" rx="108" fill="url(#ambSphere)" />
+
+  <!-- Steam Waves (Optically aligned above cup opening, bold and graceful) -->
+  <g filter="drop-shadow(0 2px 8px rgba(15,23,42,0.15))">
+    <path d="M 205 160 C 185 120 225 95 200 55" fill="none" stroke="url(#steamGrad)" stroke-width="20" stroke-linecap="round" />
+    <path d="M 265 160 C 245 120 285 95 260 55" fill="none" stroke="url(#steamGrad)" stroke-width="20" stroke-linecap="round" />
+  </g>
+
+  <!-- Saucer with Shadow -->
+  <!-- Center of mug is at X=235, entire composition (cup + handle) spans 140 to 376 -> center = 258 -->
+  <g filter="url(#mugShadow)">
+    <ellipse cx="242" cy="386" rx="150" ry="24" fill="#E2E8F0" opacity="0.95" />
+    <ellipse cx="242" cy="382" rx="138" ry="20" fill="#F8FAFC" />
+  </g>
+
+  <!-- Cup and Handle -->
+  <g filter="url(#mugShadow)">
+    <!-- Handle -->
+    <path d="M 305 235 C 385 235 385 335 305 335" fill="none" stroke="url(#handleGrad)" stroke-width="28" stroke-linecap="round" />
+    <path d="M 305 235 C 365 235 365 335 305 335" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity="0.7" />
+
+    <!-- Cup Body -->
+    <path d="M 142 202 L 332 202 C 332 202 328 335 298 362 C 272 378 204 378 178 362 C 148 335 142 202 142 202 Z" fill="url(#mugGrad)" />
+
+    <!-- Cup Body Highlight -->
+    <path d="M 152 210 C 151 275 158 326 178 354" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" opacity="0.85" />
+
+    <!-- Ceramic Rim & Coffee Surface -->
+    <ellipse cx="237" cy="202" rx="95" ry="24" fill="#FFFFFF" />
+    <ellipse cx="237" cy="204" rx="85" ry="19" fill="url(#coffeeSurface)" />
+    <!-- Crema Swirl -->
+    <ellipse cx="218" cy="202" rx="46" ry="9" fill="#FED7AA" opacity="0.4" />
+
+    <!-- Pause Symbol on Cup -->
+    <rect x="214" y="248" width="19" height="64" rx="9.5" fill="url(#pauseGrad)" />
+    <rect x="245" y="248" width="19" height="64" rx="9.5" fill="url(#pauseGrad)" />
+  </g>
+</svg>
