@@ -5,5 +5,6 @@ public enum SessionState
     Working,
     Paused,
     OnShortBreak,
-    OnLongBreak
+    OnLongBreak,
+    Relaxing
 }

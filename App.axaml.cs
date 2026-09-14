@@ -60,7 +60,10 @@ public partial class App : Application
 
         if (GetValue(TrayIcon.IconsProperty) is { Count: > 0 } icons && icons[0].Menu is { } menu)
         {
-            trayState.Attach(FindMenuItem(menu, ShellStrings.TrayStop)!, FindMenuItem(menu, ShellStrings.TrayResume)!);
+            trayState.Attach(
+                FindMenuItem(menu, ShellStrings.TrayStop)!,
+                FindMenuItem(menu, ShellStrings.TrayResume)!,
+                FindMenuItem(menu, ShellStrings.TrayRelax)!);
         }
     }
 
@@ -72,6 +75,8 @@ public partial class App : Application
     private void TrayShowProgress_OnClick(object? sender, EventArgs e) => _coordinator?.ShowProgress();
 
     private void TrayShowStatistics_OnClick(object? sender, EventArgs e) => _coordinator?.ShowStatistics();
+
+    private void TrayRelax_OnClick(object? sender, EventArgs e) => _coordinator?.ToggleRelax();
 
     private void TrayStop_OnClick(object? sender, EventArgs e) => _coordinator?.Stop();
 

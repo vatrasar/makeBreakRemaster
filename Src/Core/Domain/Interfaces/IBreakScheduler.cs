@@ -36,6 +36,8 @@ public interface IBreakScheduler
 
     int LongProgressPercent { get; }
 
+    bool IsRelaxMode { get; }
+
     void ApplyConfig(BreakConfig config);
 
     void Start();
@@ -47,6 +49,8 @@ public interface IBreakScheduler
     void Resume();
 
     void ConfirmBreak();
+
+    void ToggleRelax();
 
     void Tick();
 }

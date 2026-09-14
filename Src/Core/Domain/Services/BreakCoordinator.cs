@@ -54,6 +54,11 @@ public sealed class BreakCoordinator
     public void ConfirmBreak() => _scheduler.ConfirmBreak();
 
     /// <summary>
+    /// Toggles the relax mode on or off. Invoked by ShellCoordinator.
+    /// </summary>
+    public void ToggleRelax() => _scheduler.ToggleRelax();
+
+    /// <summary>
     /// Advances the schedule by one second. Invoked by the UI ticker each second.
     /// </summary>
     public void Tick() => _scheduler.Tick();

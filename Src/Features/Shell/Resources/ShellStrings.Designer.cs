@@ -79,5 +79,10 @@ namespace makeBreak.Src.Features.Shell.Resources
         {
             get { return ResourceManager.GetString("TrayExit", resourceCulture); }
         }
+
+        public static string TrayRelax
+        {
+            get { return ResourceManager.GetString("TrayRelax", resourceCulture); }
+        }
     }
 }

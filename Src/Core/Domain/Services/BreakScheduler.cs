@@ -27,6 +27,8 @@ public sealed class BreakScheduler : IBreakScheduler
 
     private bool _canConfirmBreak;
 
+    private bool _isRelaxMode;
+
     public event EventHandler? BreakStarted;
 
     public event EventHandler? BreakCountdownChanged;
@@ -51,6 +53,8 @@ public sealed class BreakScheduler : IBreakScheduler
 
     public bool CanConfirmBreak => _canConfirmBreak;
 
+    public bool IsRelaxMode => _isRelaxMode;
+
     public int ShortProgressPercent => AsPercent(_shortWorkSeconds, _config.TimeToStartShortBreak);
 
     public int LongProgressPercent => AsPercent(_longWorkSeconds, _config.TimeToStartLongBreak);
@@ -69,6 +73,7 @@ public sealed class BreakScheduler : IBreakScheduler
         ResetAllCounters();
         _longBreakConsumed = false;
         _canConfirmBreak = false;
+        _isRelaxMode = false;
         SetState(SessionState.Working);
         RaiseProgressChanged();
     }
@@ -90,6 +95,7 @@ public sealed class BreakScheduler : IBreakScheduler
         ResetAllCounters();
         _longBreakConsumed = false;
         _canConfirmBreak = false;
+        _isRelaxMode = false;
         SetState(SessionState.Paused);
         RaiseProgressChanged();
 
@@ -104,7 +110,7 @@ public sealed class BreakScheduler : IBreakScheduler
         ResetAllCounters();
         _longBreakConsumed = false;
         _canConfirmBreak = false;
-        SetState(SessionState.Working);
+        SetState(_isRelaxMode ? SessionState.Relaxing : SessionState.Working);
         RaiseProgressChanged();
     }
 
@@ -123,9 +129,24 @@ public sealed class BreakScheduler : IBreakScheduler
         }
 
         _canConfirmBreak = false;
-        SetState(SessionState.Working);
+        SetState(_isRelaxMode ? SessionState.Relaxing : SessionState.Working);
         BreakEnded?.Invoke(this, EventArgs.Empty);
         RaiseProgressChanged();
+    }
+
+    /// <summary>
+    /// Toggles the relax mode on or off. When enabled, breaks continue to be scheduled
+    /// but work time is not accumulated. Invoked by BreakCoordinator.
+    /// </summary>
+    public void ToggleRelax()
+    {
+        if (_isRelaxMode)
+        {
+            DisableRelaxMode();
+            return;
+        }
+
+        EnableRelaxMode();
     }
 
     public void Tick()
@@ -133,6 +154,7 @@ public sealed class BreakScheduler : IBreakScheduler
         switch (_state)
         {
             case SessionState.Working:
+            case SessionState.Relaxing:
                 AdvanceWorkTime();
                 break;
             case SessionState.OnShortBreak:
@@ -195,6 +217,41 @@ public sealed class BreakScheduler : IBreakScheduler
 
         _state = newState;
         StateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void DisableRelaxMode()
+    {
+        _isRelaxMode = false;
+
+        if (_state == SessionState.Relaxing)
+        {
+            SetState(SessionState.Working);
+        }
+    }
+
+    private void EnableRelaxMode()
+    {
+        _isRelaxMode = true;
+
+        if (_state == SessionState.Working)
+        {
+            SetState(SessionState.Relaxing);
+            return;
+        }
+
+        if (_state == SessionState.Paused)
+        {
+            StartRelaxSession();
+        }
+    }
+
+    private void StartRelaxSession()
+    {
+        ResetAllCounters();
+        _longBreakConsumed = false;
+        _canConfirmBreak = false;
+        SetState(SessionState.Relaxing);
+        RaiseProgressChanged();
     }
 
     private void ResetAllCounters()

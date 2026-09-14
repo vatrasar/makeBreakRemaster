@@ -40,4 +40,8 @@
   <data name="TrayExit" xml:space="preserve">
     <value>Exit</value>
   </data>
+
+  <data name="TrayRelax" xml:space="preserve">
+    <value>Relax</value>
+  </data>
 </root>

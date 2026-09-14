@@ -60,6 +60,11 @@ public sealed class ShellCoordinator
 
     public void StartWork() => _coordinator.StartWork();
 
+    /// <summary>
+    /// Toggles the relax mode on or off. Invoked by App during tray interaction.
+    /// </summary>
+    public void ToggleRelax() => _coordinator.ToggleRelax();
+
     public void Stop() => _coordinator.StopSchedule();
 
     public void Resume() => _coordinator.ResumeSchedule();
@@ -102,7 +107,7 @@ public sealed class ShellCoordinator
 
     private void HandleStateChanged(SessionState state)
     {
-        if (state == SessionState.Working)
+        if (state is SessionState.Working or SessionState.Relaxing)
         {
             _mainWindow.Hide();
         }

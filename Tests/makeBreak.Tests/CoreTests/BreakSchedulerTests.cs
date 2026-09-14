@@ -318,6 +318,85 @@ public class BreakSchedulerTests
         Assert.Equal(2, shortBreaks);
     }
 
+    [Fact]
+    public void ToggleRelax_whenPaused_startsInRelaxingState()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+
+        scheduler.ToggleRelax();
+
+        Assert.True(scheduler.IsRelaxMode);
+        Assert.Equal(SessionState.Relaxing, scheduler.State);
+    }
+
+    [Fact]
+    public void ToggleRelax_whenWorking_switchesToRelaxingState()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.Start();
+
+        scheduler.ToggleRelax();
+
+        Assert.True(scheduler.IsRelaxMode);
+        Assert.Equal(SessionState.Relaxing, scheduler.State);
+    }
+
+    [Fact]
+    public void ToggleRelax_whenRelaxing_switchesBackToWorkingState()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.ToggleRelax();
+
+        scheduler.ToggleRelax();
+
+        Assert.False(scheduler.IsRelaxMode);
+        Assert.Equal(SessionState.Working, scheduler.State);
+    }
+
+    [Fact]
+    public void RelaxingState_triggersShortBreak()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.ToggleRelax();
+
+        TickFor(scheduler, DefaultConfig.TimeToStartShortBreak);
+
+        Assert.Equal(BreakKind.Short, scheduler.CurrentBreakKind);
+        Assert.Equal(SessionState.OnShortBreak, scheduler.State);
+    }
+
+    [Fact]
+    public void ConfirmBreak_whenInRelaxMode_returnsToRelaxingState()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.ToggleRelax();
+        TickFor(scheduler, DefaultConfig.TimeToStartShortBreak);
+        TickFor(scheduler, DefaultConfig.TimeForShortBreak);
+
+        scheduler.ConfirmBreak();
+
+        Assert.Equal(SessionState.Relaxing, scheduler.State);
+        Assert.True(scheduler.IsRelaxMode);
+    }
+
+    [Fact]
+    public void Stop_resetsRelaxMode()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.ToggleRelax();
+
+        scheduler.Stop();
+
+        Assert.False(scheduler.IsRelaxMode);
+        Assert.Equal(SessionState.Paused, scheduler.State);
+    }
+
     private static void TickFor(BreakScheduler scheduler, int seconds)
     {
         for (int i = 0; i < seconds; i++)

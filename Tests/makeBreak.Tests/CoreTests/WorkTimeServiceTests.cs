@@ -95,4 +95,22 @@ public class WorkTimeServiceTests
         Assert.Equal(1800, summary.First(day => day.Date == today.AddDays(-2)).WorkSeconds);
         Assert.Equal(0, summary.First(day => day.Date == today.AddDays(-1)).WorkSeconds);
     }
+
+    [Fact]
+    public void RecordWorkSecond_whenRelaxing_doesNotAccumulate()
+    {
+        var scheduler = new Mock<IBreakScheduler>();
+        scheduler.SetupGet(s => s.State).Returns(SessionState.Relaxing);
+        var repository = new Mock<IWorkTimeRepository>();
+        var service = new WorkTimeService(scheduler.Object, repository.Object);
+
+        for (int i = 0; i < 60; i++)
+        {
+            service.RecordWorkSecond();
+        }
+
+        scheduler.Raise(s => s.StateChanged += null, (object?)null, EventArgs.Empty);
+
+        repository.Verify(r => r.AddWorkSeconds(It.IsAny<DateOnly>(), It.IsAny<int>()), Times.Never());
+    }
 }

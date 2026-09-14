@@ -53,4 +53,14 @@ public class BreakCoordinatorTests
         Assert.Same(newConfig, scheduler.Config);
         Assert.Equal(60, coordinator.CurrentConfig.TimeForLongBreak);
     }
+
+    [Fact]
+    public void ToggleRelax_delegatesToScheduler()
+    {
+        BreakCoordinator coordinator = CreateCoordinator(out BreakScheduler scheduler);
+
+        coordinator.ToggleRelax();
+
+        Assert.True(scheduler.IsRelaxMode);
+    }
 }
