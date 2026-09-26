@@ -17,13 +17,15 @@ public sealed record BreakState
 
     public bool IsFinishedVisible { get; init; }
 
+    public string OvertimeNumber { get; init; } = "+00:00";
+
     public bool CanConfirm { get; init; }
 }
 
 /// <summary>
 /// The fullscreen break screen. Shows the remaining break countdown and, once the
-/// countdown ends, enables a button confirming the break is over. The break only
-/// ends when the user presses that button.
+/// countdown ends, enables a button confirming the break is over and displays the
+/// overtime elapsed since the countdown ended. The break only ends when the user presses that button.
 /// </summary>
 public sealed partial class BreakViewModel : ViewModelBase<BreakState>, IRoutableViewModel, IActivatableViewModel
 {
@@ -67,6 +69,7 @@ public sealed partial class BreakViewModel : ViewModelBase<BreakState>, IRoutabl
         bool finished = remaining == 0;
         int countdownLabel = _coordinator.Scheduler.BreakDurationSeconds;
         int progress = countdownLabel > 0 ? (int)Math.Round((double)remaining / countdownLabel * 100) : 0;
+        int overtime = _coordinator.Scheduler.OvertimeBreakSeconds;
 
         UpdateState(s => s with
         {
@@ -74,7 +77,22 @@ public sealed partial class BreakViewModel : ViewModelBase<BreakState>, IRoutabl
             CountdownProgress = progress,
             IsCountdownVisible = !finished,
             IsFinishedVisible = finished,
+            OvertimeNumber = FormatOvertime(overtime),
             CanConfirm = finished,
         });
+    }
+
+    private static string FormatOvertime(int totalSeconds)
+    {
+        int hours = totalSeconds / 3600;
+        int minutes = totalSeconds % 3600 / 60;
+        int seconds = totalSeconds % 60;
+
+        if (hours > 0)
+        {
+            return $"+{hours}:{minutes:D2}:{seconds:D2}";
+        }
+
+        return $"+{minutes:D2}:{seconds:D2}";
     }
 }

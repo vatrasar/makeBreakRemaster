@@ -55,6 +55,15 @@
                                    Classes="countdown-finished"
                                    HorizontalAlignment="Center" />
 
+                        <TextBlock x:Name="OvertimeNumberTextBlock"
+                                   Classes="overtime-number"
+                                   HorizontalAlignment="Center" />
+
+                        <TextBlock x:Name="OvertimeCaptionTextBlock"
+                                   Text="{x:Static res:BreakStrings.OvertimeCaption}"
+                                   Classes="overtime-caption"
+                                   HorizontalAlignment="Center" />
+
                         <ProgressBar x:Name="CountdownProgressBar"
                                      Minimum="0"
                                      Maximum="100"

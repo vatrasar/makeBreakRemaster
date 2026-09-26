@@ -28,4 +28,8 @@
   <data name="ConfirmBreakButton" xml:space="preserve">
     <value>Break finished</value>
   </data>
+
+  <data name="OvertimeCaption" xml:space="preserve">
+    <value>Break extended by</value>
+  </data>
 </root>

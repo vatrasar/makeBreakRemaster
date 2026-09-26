@@ -397,6 +397,91 @@ public class BreakSchedulerTests
         Assert.Equal(SessionState.Paused, scheduler.State);
     }
 
+    [Fact]
+    public void OvertimeBreakSeconds_beforeBreakStarts_isZero()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.Start();
+
+        Assert.Equal(0, scheduler.OvertimeBreakSeconds);
+    }
+
+    [Fact]
+    public void OvertimeBreakSeconds_duringCountdown_isZero()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.Start();
+        TickFor(scheduler, DefaultConfig.TimeToStartShortBreak);
+
+        Assert.Equal(0, scheduler.OvertimeBreakSeconds);
+
+        TickFor(scheduler, DefaultConfig.TimeForShortBreak - 1);
+        Assert.Equal(0, scheduler.OvertimeBreakSeconds);
+    }
+
+    [Fact]
+    public void OvertimeBreakSeconds_whenCountdownReachesZero_startsAtZero()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.Start();
+        TickFor(scheduler, DefaultConfig.TimeToStartShortBreak);
+        TickFor(scheduler, DefaultConfig.TimeForShortBreak);
+
+        Assert.Equal(0, scheduler.RemainingBreakSeconds);
+        Assert.Equal(0, scheduler.OvertimeBreakSeconds);
+    }
+
+    [Fact]
+    public void OvertimeBreakSeconds_afterCountdownEnds_incrementsOnEachTick()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.Start();
+        TickFor(scheduler, DefaultConfig.TimeToStartShortBreak);
+        TickFor(scheduler, DefaultConfig.TimeForShortBreak);
+
+        TickFor(scheduler, 5);
+
+        Assert.Equal(5, scheduler.OvertimeBreakSeconds);
+    }
+
+    [Fact]
+    public void OvertimeBreakSeconds_afterConfirmBreak_resetsToZero()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.Start();
+        TickFor(scheduler, DefaultConfig.TimeToStartShortBreak);
+        TickFor(scheduler, DefaultConfig.TimeForShortBreak);
+        TickFor(scheduler, 10);
+
+        Assert.Equal(10, scheduler.OvertimeBreakSeconds);
+
+        scheduler.ConfirmBreak();
+
+        Assert.Equal(0, scheduler.OvertimeBreakSeconds);
+    }
+
+    [Fact]
+    public void OvertimeBreakSeconds_afterStop_resetsToZero()
+    {
+        var scheduler = new BreakScheduler();
+        scheduler.ApplyConfig(DefaultConfig);
+        scheduler.Start();
+        TickFor(scheduler, DefaultConfig.TimeToStartShortBreak);
+        TickFor(scheduler, DefaultConfig.TimeForShortBreak);
+        TickFor(scheduler, 7);
+
+        Assert.Equal(7, scheduler.OvertimeBreakSeconds);
+
+        scheduler.Stop();
+
+        Assert.Equal(0, scheduler.OvertimeBreakSeconds);
+    }
+
     private static void TickFor(BreakScheduler scheduler, int seconds)
     {
         for (int i = 0; i < seconds; i++)

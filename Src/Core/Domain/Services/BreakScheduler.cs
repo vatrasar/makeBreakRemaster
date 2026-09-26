@@ -51,6 +51,8 @@ public sealed class BreakScheduler : IBreakScheduler
 
     public int RemainingBreakSeconds => Math.Max(BreakDurationSeconds - _breakElapsedSeconds, 0);
 
+    public int OvertimeBreakSeconds => Math.Max(_breakElapsedSeconds - BreakDurationSeconds, 0);
+
     public bool CanConfirmBreak => _canConfirmBreak;
 
     public bool IsRelaxMode => _isRelaxMode;

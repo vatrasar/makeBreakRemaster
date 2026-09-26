@@ -30,6 +30,8 @@ public interface IBreakScheduler
 
     int BreakDurationSeconds { get; }
 
+    int OvertimeBreakSeconds { get; }
+
     bool CanConfirmBreak { get; }
 
     int ShortProgressPercent { get; }

@@ -64,5 +64,10 @@ namespace makeBreak.Src.Features.Break.Resources
         {
             get { return ResourceManager.GetString("ConfirmBreakButton", resourceCulture); }
         }
+
+        public static string OvertimeCaption
+        {
+            get { return ResourceManager.GetString("OvertimeCaption", resourceCulture); }
+        }
     }
 }
