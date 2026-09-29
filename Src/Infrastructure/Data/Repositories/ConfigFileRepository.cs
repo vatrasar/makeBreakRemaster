@@ -5,7 +5,7 @@ using makeBreak.Src.Core.Domain.RepositoryContracts;
 namespace makeBreak.Src.Infrastructure.Data.Repositories;
 
 /// <summary>
-/// Reads and writes the four schedule values to <c>conf.txt</c> located in the per-user data folder (~/.local/share/makeBreak on Linux).
+/// Reads and writes the schedule values and voice notification preference to <c>conf.txt</c> located in the per-user data folder (~/.local/share/makeBreak on Linux).
 /// </summary>
 public sealed class ConfigFileRepository : IConfigRepository
 {
@@ -37,12 +37,15 @@ public sealed class ConfigFileRepository : IConfigRepository
             return null;
         }
 
+        bool areVoiceNotificationsEnabled = lines.Length < 5 || !bool.TryParse(lines[4], out bool parsedBool) || parsedBool;
+
         return new BreakConfig
         {
             TimeForLongBreak = timeForLongBreak,
             TimeForShortBreak = timeForShortBreak,
             TimeToStartLongBreak = timeToStartLongBreak,
             TimeToStartShortBreak = timeToStartShortBreak,
+            AreVoiceNotificationsEnabled = areVoiceNotificationsEnabled,
         };
     }
 
@@ -54,6 +57,7 @@ public sealed class ConfigFileRepository : IConfigRepository
             config.TimeForShortBreak.ToString(CultureInfo.InvariantCulture),
             config.TimeToStartLongBreak.ToString(CultureInfo.InvariantCulture),
             config.TimeToStartShortBreak.ToString(CultureInfo.InvariantCulture),
+            config.AreVoiceNotificationsEnabled.ToString(),
         };
 
         File.WriteAllLines(_filePath, lines);

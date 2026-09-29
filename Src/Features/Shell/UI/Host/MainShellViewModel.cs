@@ -15,13 +15,17 @@ namespace makeBreak.Src.Features.Shell.UI.Host;
 public sealed class MainShellViewModel : ViewModelBase<MainShellState>, IScreen
 {
     private readonly BreakCoordinator _coordinator;
+    private readonly makeBreak.Src.Core.Domain.Interfaces.IBreakVoiceAlertService _voiceAlertService;
 
-    public MainShellViewModel(BreakCoordinator coordinator) : base(new MainShellState())
+    public MainShellViewModel(
+        BreakCoordinator coordinator,
+        makeBreak.Src.Core.Domain.Interfaces.IBreakVoiceAlertService voiceAlertService) : base(new MainShellState())
     {
         _coordinator = coordinator;
+        _voiceAlertService = voiceAlertService;
         Router = new RoutingState();
 
-        _coordinator.BreakStarted += (_, _) => Router.Navigate.Execute(new BreakViewModel(this, _coordinator));
+        _coordinator.BreakStarted += (_, _) => Router.Navigate.Execute(new BreakViewModel(this, _coordinator, _voiceAlertService));
         _coordinator.BreakEnded += (_, _) => Router.Navigate.Execute(new StartWorkViewModel(this, _coordinator));
 
         Router.Navigate.Execute(new StartWorkViewModel(this, _coordinator));

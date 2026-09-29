@@ -114,4 +114,90 @@ public class BreakViewModelTests
         Assert.False(scheduler.CanConfirmBreak);
         Assert.Equal(0, scheduler.OvertimeBreakSeconds);
     }
+
+    [Fact]
+    public void RefreshState_DuringCountdownAndVoiceEnabled_MuteButtonIsVisible()
+    {
+        BreakCoordinator coordinator = CreateCoordinator(out BreakScheduler scheduler);
+        var hostScreen = new Mock<IScreen>();
+        var viewModel = new BreakViewModel(hostScreen.Object, coordinator);
+        using var activation = viewModel.Activator.Activate();
+
+        scheduler.Start();
+        for (int i = 0; i < TestConfig.TimeToStartShortBreak; i++)
+        {
+            scheduler.Tick();
+        }
+
+        Assert.True(viewModel.State.IsMuteButtonVisible);
+    }
+
+    [Fact]
+    public void RefreshState_DuringCountdownAndVoiceDisabled_MuteButtonIsHidden()
+    {
+        BreakCoordinator coordinator = CreateCoordinator(out BreakScheduler scheduler);
+        coordinator.SaveSettings(TestConfig with { AreVoiceNotificationsEnabled = false });
+
+        var hostScreen = new Mock<IScreen>();
+        var viewModel = new BreakViewModel(hostScreen.Object, coordinator);
+        using var activation = viewModel.Activator.Activate();
+
+        scheduler.Start();
+        for (int i = 0; i < TestConfig.TimeToStartShortBreak; i++)
+        {
+            scheduler.Tick();
+        }
+
+        Assert.False(viewModel.State.IsMuteButtonVisible);
+    }
+
+    [Fact]
+    public void RefreshState_WhenFinishedAndVoiceEnabled_MuteButtonIsVisible()
+    {
+        BreakCoordinator coordinator = CreateCoordinator(out BreakScheduler scheduler);
+        var hostScreen = new Mock<IScreen>();
+        var viewModel = new BreakViewModel(hostScreen.Object, coordinator);
+        using var activation = viewModel.Activator.Activate();
+
+        scheduler.Start();
+        for (int i = 0; i < TestConfig.TimeToStartShortBreak + TestConfig.TimeForShortBreak; i++)
+        {
+            scheduler.Tick();
+        }
+
+        Assert.True(viewModel.State.IsMuteButtonVisible);
+    }
+
+    [Fact]
+    public void RefreshState_WhenFinishedAndVoiceDisabled_MuteButtonIsHidden()
+    {
+        BreakCoordinator coordinator = CreateCoordinator(out BreakScheduler scheduler);
+        coordinator.SaveSettings(TestConfig with { AreVoiceNotificationsEnabled = false });
+
+        var hostScreen = new Mock<IScreen>();
+        var viewModel = new BreakViewModel(hostScreen.Object, coordinator);
+        using var activation = viewModel.Activator.Activate();
+
+        scheduler.Start();
+        for (int i = 0; i < TestConfig.TimeToStartShortBreak + TestConfig.TimeForShortBreak; i++)
+        {
+            scheduler.Tick();
+        }
+
+        Assert.False(viewModel.State.IsMuteButtonVisible);
+    }
+
+    [Fact]
+    public void ToggleMuteVoiceAlerts_DelegatesToVoiceAlertService()
+    {
+        BreakCoordinator coordinator = CreateCoordinator(out BreakScheduler scheduler);
+        var hostScreen = new Mock<IScreen>();
+        var voiceService = new Mock<makeBreak.Src.Core.Domain.Interfaces.IBreakVoiceAlertService>();
+        var viewModel = new BreakViewModel(hostScreen.Object, coordinator, voiceService.Object);
+        using var activation = viewModel.Activator.Activate();
+
+        viewModel.ToggleMuteVoiceAlertsCommand.Execute().Subscribe();
+
+        voiceService.Verify(s => s.ToggleMuteCurrentBreak(), Times.Once);
+    }
 }

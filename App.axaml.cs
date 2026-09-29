@@ -8,6 +8,7 @@ using makeBreak.Src.Features.Shell.Resources;
 using makeBreak.Src.Infrastructure.Data;
 using makeBreak.Src.Infrastructure.DependencyInjection;
 using makeBreak.Src.Infrastructure.Navigation;
+using makeBreak.Src.Core.Domain.Interfaces;
 using makeBreak.Src.Core.Domain.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +46,8 @@ public partial class App : Application
 
             BreakTicker ticker = services.GetRequiredService<BreakTicker>();
             ticker.Start();
+
+            services.GetRequiredService<IBreakVoiceAlertService>();
 
             AttachTrayMenu(services);
 

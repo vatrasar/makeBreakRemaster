@@ -69,5 +69,15 @@ namespace makeBreak.Src.Features.Break.Resources
         {
             get { return ResourceManager.GetString("OvertimeCaption", resourceCulture); }
         }
+
+        public static string MuteVoiceAlertsButton
+        {
+            get { return ResourceManager.GetString("MuteVoiceAlertsButton", resourceCulture); }
+        }
+
+        public static string UnmuteVoiceAlertsButton
+        {
+            get { return ResourceManager.GetString("UnmuteVoiceAlertsButton", resourceCulture); }
+        }
     }
 }

@@ -7,6 +7,7 @@ using makeBreak.Src.Core.Domain.RepositoryContracts;
 using makeBreak.Src.Core.Domain.Services;
 using makeBreak.Src.Features.Shell;
 using makeBreak.Src.Features.Shell.UI.Host;
+using makeBreak.Src.Infrastructure.Audio;
 using makeBreak.Src.Infrastructure.Data;
 using makeBreak.Src.Infrastructure.Data.Repositories;
 using makeBreak.Src.Infrastructure.Navigation;
@@ -31,6 +32,8 @@ public static class DependencyInjection
         services.AddSingleton<ConfigService>();
         services.AddSingleton<IBreakScheduler, BreakScheduler>();
         services.AddSingleton<BreakCoordinator>();
+        services.AddSingleton<IAudioPlayer, SystemAudioPlayer>();
+        services.AddSingleton<IBreakVoiceAlertService, BreakVoiceAlertService>();
 
         services.AddSingleton<BreakTicker>();
         services.AddSingleton<MainShellViewModel>();

@@ -10,6 +10,8 @@ public sealed record BreakConfig
     public int TimeForLongBreak { get; init; }
 
     public int TimeToStartShortBreak { get; init; }
-
+ 
     public int TimeForShortBreak { get; init; }
+
+    public bool AreVoiceNotificationsEnabled { get; init; } = true;
 }

@@ -5,8 +5,8 @@ namespace makeBreak.Src.Features.Settings.UI;
 
 /// <summary>
 /// Settings dialog.
-/// Purpose: lets the user configure the four break schedule values.
-/// Key UI elements: four NumericUpDown inputs, OK/Cancel buttons.
+/// Purpose: lets the user configure the break schedule values and voice notifications.
+/// Key UI elements: four NumericUpDown inputs, VoiceNotificationsCheckBox, OK/Cancel buttons.
 /// Navigate From: system tray menu (Settings).
 /// Navigate To: none.
 /// </summary>
@@ -28,6 +28,8 @@ public partial class SettingsWindow : ReactiveWindow<SettingsViewModel>
 
             this.Bind(ViewModel, vm => vm.TimeForShortBreakSeconds, view => view.TimeForShortBreakInput.Value, ToDecimal, ToInt);
 
+            this.Bind(ViewModel, vm => vm.AreVoiceNotificationsEnabled, view => view.VoiceNotificationsCheckBox.IsChecked, ToNullableBool, FromNullableBool);
+
             this.BindCommand(ViewModel, vm => vm.SaveSettingsCommand, view => view.OkButton);
 
             this.BindCommand(ViewModel, vm => vm.CancelCommand, view => view.CancelButton);
@@ -37,4 +39,8 @@ public partial class SettingsWindow : ReactiveWindow<SettingsViewModel>
     private static decimal? ToDecimal(int value) => value;
 
     private static int ToInt(decimal? value) => value is { } v ? (int)Math.Max(1, v) : 1;
+
+    private static bool? ToNullableBool(bool value) => value;
+
+    private static bool FromNullableBool(bool? value) => value ?? true;
 }

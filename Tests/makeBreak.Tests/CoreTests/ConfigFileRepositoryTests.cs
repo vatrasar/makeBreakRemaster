@@ -31,6 +31,64 @@ public class ConfigFileRepositoryTests
             Assert.Equal(120, loaded.TimeForShortBreak);
             Assert.Equal(900, loaded.TimeToStartLongBreak);
             Assert.Equal(300, loaded.TimeToStartShortBreak);
+            Assert.True(loaded.AreVoiceNotificationsEnabled);
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    [Fact]
+    public void Save_thenLoad_roundTripsAreVoiceNotificationsEnabledFalse()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"conf_{Guid.NewGuid():N}.txt");
+
+        try
+        {
+            var repository = new ConfigFileRepository(path);
+            var config = new BreakConfig
+            {
+                TimeForLongBreak = 300,
+                TimeForShortBreak = 120,
+                TimeToStartLongBreak = 900,
+                TimeToStartShortBreak = 300,
+                AreVoiceNotificationsEnabled = false,
+            };
+
+            repository.Save(config);
+
+            BreakConfig? loaded = repository.Load();
+
+            Assert.NotNull(loaded);
+            Assert.False(loaded!.AreVoiceNotificationsEnabled);
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    [Fact]
+    public void Load_whenFourLinesPresent_defaultsAreVoiceNotificationsEnabledToTrue()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"conf_{Guid.NewGuid():N}.txt");
+
+        try
+        {
+            File.WriteAllLines(path, new[] { "300", "120", "900", "300" });
+
+            var repository = new ConfigFileRepository(path);
+            BreakConfig? loaded = repository.Load();
+
+            Assert.NotNull(loaded);
+            Assert.True(loaded!.AreVoiceNotificationsEnabled);
         }
         finally
         {

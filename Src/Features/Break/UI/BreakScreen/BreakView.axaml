@@ -3,6 +3,7 @@
              xmlns:rxui="using:Avalonia.ReactiveUI"
              xmlns:vm="using:makeBreak.Src.Features.Break.UI.BreakScreen"
              xmlns:res="using:makeBreak.Src.Features.Break.Resources"
+             xmlns:material="using:Material.Icons.Avalonia"
              x:Class="makeBreak.Src.Features.Break.UI.BreakScreen.BreakView"
              x:TypeArguments="vm:BreakViewModel">
     <UserControl.Styles>
@@ -14,6 +15,17 @@
     <Grid RowDefinitions="*,Auto"
           Margin="48">
         <Grid Grid.Row="0">
+            <Button x:Name="MuteVoiceAlertsButton"
+                    Classes="icon-button"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="12">
+                <material:MaterialIcon x:Name="MuteVoiceAlertsIcon"
+                                       Kind="VolumeHigh"
+                                       Width="24"
+                                       Height="24" />
+            </Button>
+
             <Grid Width="360"
                   Height="360"
                   HorizontalAlignment="Center"
@@ -75,14 +87,12 @@
             </Grid>
         </Grid>
 
-        <StackPanel Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Bottom"
-                    Margin="0,0,0,32">
-            <Button x:Name="ConfirmBreakButton"
-                    Classes="primary"
-                    Content="{x:Static res:BreakStrings.ConfirmBreakButton}"
-                    HorizontalAlignment="Center" />
-        </StackPanel>
+        <Button x:Name="ConfirmBreakButton"
+                Grid.Row="1"
+                Classes="primary"
+                Content="{x:Static res:BreakStrings.ConfirmBreakButton}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,32" />
     </Grid>
 </rxui:ReactiveUserControl>

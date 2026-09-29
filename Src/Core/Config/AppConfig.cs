@@ -11,6 +11,10 @@ public sealed class AppConfig
     public int TimeToStartLongBreakSeconds { get; set; } = 900;
 
     public int TimeToStartShortBreakSeconds { get; set; } = 300;
+ 
+    public bool AreVoiceNotificationsEnabled { get; set; } = true;
+
+    public string VoicePromptsDirectory { get; set; } = "Assets/VoicePrompts";
 
     public string ConfigFileName { get; set; } = "conf.txt";
 

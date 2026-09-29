@@ -42,6 +42,7 @@ public sealed class ConfigService
             TimeForShortBreak = appConfig.TimeForShortBreakSeconds,
             TimeToStartLongBreak = appConfig.TimeToStartLongBreakSeconds,
             TimeToStartShortBreak = appConfig.TimeToStartShortBreakSeconds,
+            AreVoiceNotificationsEnabled = appConfig.AreVoiceNotificationsEnabled,
         };
     }
 }

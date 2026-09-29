@@ -16,6 +16,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.0" />
     <PackageReference Include="Avalonia.Diagnostics" Version="11.3.0" />
+    <PackageReference Include="Material.Icons.Avalonia" Version="2.4.1" />
     <PackageReference Include="ReactiveUI" Version="20.2.45" />
     <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.6.30" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.10" />
@@ -28,6 +29,13 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Remove="Assets\VoicePrompts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\VoicePrompts\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

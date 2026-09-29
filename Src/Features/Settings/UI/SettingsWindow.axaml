@@ -6,7 +6,7 @@
         Title="{x:Static res:SettingsStrings.WindowTitle}"
         Icon="/Assets/ikona.png"
         Width="420"
-        Height="340"
+        Height="380"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
         ShowInTaskbar="False">
@@ -44,6 +44,10 @@
                     <TextBlock Text="{x:Static res:SettingsStrings.TimeForShortBreakLabel}" />
                     <NumericUpDown x:Name="TimeForShortBreakInput" Minimum="1" Increment="1" />
                 </StackPanel>
+
+                <CheckBox x:Name="VoiceNotificationsCheckBox"
+                          Content="{x:Static res:SettingsStrings.VoiceNotificationsLabel}"
+                          Margin="0,4,0,0" />
             </StackPanel>
         </ScrollViewer>
 

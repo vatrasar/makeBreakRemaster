@@ -20,6 +20,10 @@ public sealed record BreakState
     public string OvertimeNumber { get; init; } = "+00:00";
 
     public bool CanConfirm { get; init; }
+
+    public bool IsMuteButtonVisible { get; init; }
+
+    public bool IsMuted { get; init; }
 }
 
 /// <summary>
@@ -30,11 +34,16 @@ public sealed record BreakState
 public sealed partial class BreakViewModel : ViewModelBase<BreakState>, IRoutableViewModel, IActivatableViewModel
 {
     private readonly BreakCoordinator _coordinator;
+    private readonly makeBreak.Src.Core.Domain.Interfaces.IBreakVoiceAlertService? _voiceAlertService;
 
-    public BreakViewModel(IScreen hostScreen, BreakCoordinator coordinator) : base(new BreakState())
+    public BreakViewModel(
+        IScreen hostScreen,
+        BreakCoordinator coordinator,
+        makeBreak.Src.Core.Domain.Interfaces.IBreakVoiceAlertService? voiceAlertService = null) : base(new BreakState())
     {
         HostScreen = hostScreen;
         _coordinator = coordinator;
+        _voiceAlertService = voiceAlertService;
 
         this.WhenActivated(disposables =>
         {
@@ -50,6 +59,15 @@ public sealed partial class BreakViewModel : ViewModelBase<BreakState>, IRoutabl
                 .Subscribe(_ => RefreshState())
                 .DisposeWith(disposables);
 
+            if (_voiceAlertService != null)
+            {
+                Observable.FromEventPattern<EventHandler, EventArgs>(
+                        h => _voiceAlertService.MuteStateChanged += h,
+                        h => _voiceAlertService.MuteStateChanged -= h)
+                    .Subscribe(_ => RefreshState())
+                    .DisposeWith(disposables);
+            }
+
             RefreshState();
         });
     }
@@ -63,6 +81,9 @@ public sealed partial class BreakViewModel : ViewModelBase<BreakState>, IRoutabl
     [ReactiveCommand]
     private void ConfirmBreak() => _coordinator.ConfirmBreak();
 
+    [ReactiveCommand]
+    private void ToggleMuteVoiceAlerts() => _voiceAlertService?.ToggleMuteCurrentBreak();
+
     private void RefreshState()
     {
         int remaining = _coordinator.Scheduler.RemainingBreakSeconds;
@@ -70,6 +91,8 @@ public sealed partial class BreakViewModel : ViewModelBase<BreakState>, IRoutabl
         int countdownLabel = _coordinator.Scheduler.BreakDurationSeconds;
         int progress = countdownLabel > 0 ? (int)Math.Round((double)remaining / countdownLabel * 100) : 0;
         int overtime = _coordinator.Scheduler.OvertimeBreakSeconds;
+        bool isVoiceEnabled = _coordinator.CurrentConfig.AreVoiceNotificationsEnabled;
+        bool isMuted = _voiceAlertService?.IsMutedForCurrentBreak ?? false;
 
         UpdateState(s => s with
         {
@@ -79,6 +102,8 @@ public sealed partial class BreakViewModel : ViewModelBase<BreakState>, IRoutabl
             IsFinishedVisible = finished,
             OvertimeNumber = FormatOvertime(overtime),
             CanConfirm = finished,
+            IsMuteButtonVisible = isVoiceEnabled,
+            IsMuted = isMuted,
         });
     }
 

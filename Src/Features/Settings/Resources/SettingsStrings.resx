@@ -32,4 +32,8 @@
   <data name="TimeForShortBreakLabel" xml:space="preserve">
     <value>Short break duration (seconds)</value>
   </data>
+
+  <data name="VoiceNotificationsLabel" xml:space="preserve">
+    <value>Enable voice notifications</value>
+  </data>
 </root>

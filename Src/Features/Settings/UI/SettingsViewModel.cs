@@ -25,6 +25,7 @@ public partial class SettingsViewModel : ViewModelBase
         TimeForLongBreakMinutes = SecondsToMinutes(config.TimeForLongBreak);
         TimeToStartShortBreakMinutes = SecondsToMinutes(config.TimeToStartShortBreak);
         TimeForShortBreakSeconds = config.TimeForShortBreak;
+        AreVoiceNotificationsEnabled = config.AreVoiceNotificationsEnabled;
     }
 
     public event EventHandler? Saved;
@@ -43,6 +44,9 @@ public partial class SettingsViewModel : ViewModelBase
     [Reactive]
     private int _timeForShortBreakSeconds;
 
+    [Reactive]
+    private bool _areVoiceNotificationsEnabled;
+
     [ReactiveCommand]
     private void Cancel() => Cancelled?.Invoke(this, EventArgs.Empty);
 
@@ -55,6 +59,7 @@ public partial class SettingsViewModel : ViewModelBase
             TimeForLongBreak = MinutesToSeconds(TimeForLongBreakMinutes),
             TimeToStartShortBreak = MinutesToSeconds(TimeToStartShortBreakMinutes),
             TimeForShortBreak = TimeForShortBreakSeconds,
+            AreVoiceNotificationsEnabled = AreVoiceNotificationsEnabled,
         });
 
         Saved?.Invoke(this, EventArgs.Empty);

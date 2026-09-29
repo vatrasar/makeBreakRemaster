@@ -32,4 +32,12 @@
   <data name="OvertimeCaption" xml:space="preserve">
     <value>Break extended by</value>
   </data>
+
+  <data name="MuteVoiceAlertsButton" xml:space="preserve">
+    <value>Mute voice alerts</value>
+  </data>
+
+  <data name="UnmuteVoiceAlertsButton" xml:space="preserve">
+    <value>Unmute voice alerts</value>
+  </data>
 </root>

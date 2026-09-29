@@ -69,5 +69,10 @@ namespace makeBreak.Src.Features.Settings.Resources
         {
             get { return ResourceManager.GetString("TimeForShortBreakLabel", resourceCulture); }
         }
+
+        public static string VoiceNotificationsLabel
+        {
+            get { return ResourceManager.GetString("VoiceNotificationsLabel", resourceCulture); }
+        }
     }
 }
