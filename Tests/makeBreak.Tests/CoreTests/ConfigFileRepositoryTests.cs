@@ -152,4 +152,62 @@ public class ConfigFileRepositoryTests
             }
         }
     }
+
+    [Fact]
+    public void Save_thenLoad_roundTripsAudioOutputDeviceId()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"conf_{Guid.NewGuid():N}.txt");
+
+        try
+        {
+            var repository = new ConfigFileRepository(path);
+            var config = new BreakConfig
+            {
+                TimeForLongBreak = 300,
+                TimeForShortBreak = 120,
+                TimeToStartLongBreak = 900,
+                TimeToStartShortBreak = 300,
+                AreVoiceNotificationsEnabled = true,
+                AudioOutputDeviceId = "alsa_output.pci-0000_00_1f.3.analog-stereo",
+            };
+
+            repository.Save(config);
+
+            BreakConfig? loaded = repository.Load();
+
+            Assert.NotNull(loaded);
+            Assert.Equal("alsa_output.pci-0000_00_1f.3.analog-stereo", loaded!.AudioOutputDeviceId);
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    [Fact]
+    public void Load_whenFiveLinesPresent_defaultsAudioOutputDeviceIdToDefault()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"conf_{Guid.NewGuid():N}.txt");
+
+        try
+        {
+            File.WriteAllLines(path, new[] { "300", "120", "900", "300", "True" });
+
+            var repository = new ConfigFileRepository(path);
+            BreakConfig? loaded = repository.Load();
+
+            Assert.NotNull(loaded);
+            Assert.Equal("default", loaded!.AudioOutputDeviceId);
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
 }

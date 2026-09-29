@@ -36,4 +36,24 @@
   <data name="VoiceNotificationsLabel" xml:space="preserve">
     <value>Enable voice notifications</value>
   </data>
+
+  <data name="AudioOutputDeviceLabel" xml:space="preserve">
+    <value>Voice alert audio output</value>
+  </data>
+
+  <data name="DefaultAudioOutput" xml:space="preserve">
+    <value>System default</value>
+  </data>
+
+  <data name="AllAudioOutputs" xml:space="preserve">
+    <value>All audio outputs</value>
+  </data>
+
+  <data name="TestAudioButton" xml:space="preserve">
+    <value>Test voice alert</value>
+  </data>
+
+  <data name="StopTestAudioButton" xml:space="preserve">
+    <value>Stop test alert</value>
+  </data>
 </root>

@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddSingleton<ConfigService>();
         services.AddSingleton<IBreakScheduler, BreakScheduler>();
         services.AddSingleton<BreakCoordinator>();
+        services.AddSingleton<IAudioDeviceService, SystemAudioDeviceService>();
         services.AddSingleton<IAudioPlayer, SystemAudioPlayer>();
         services.AddSingleton<IBreakVoiceAlertService, BreakVoiceAlertService>();
 

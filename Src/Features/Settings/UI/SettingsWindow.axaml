@@ -2,11 +2,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:res="using:makeBreak.Src.Features.Settings.Resources"
         xmlns:gres="using:makeBreak.Src.Shared.Resources"
+        xmlns:models="using:makeBreak.Src.Core.Domain.Models"
         x:Class="makeBreak.Src.Features.Settings.UI.SettingsWindow"
         Title="{x:Static res:SettingsStrings.WindowTitle}"
         Icon="/Assets/ikona.png"
-        Width="420"
-        Height="380"
+        Width="440"
+        Height="520"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
         ShowInTaskbar="False">
@@ -48,6 +49,23 @@
                 <CheckBox x:Name="VoiceNotificationsCheckBox"
                           Content="{x:Static res:SettingsStrings.VoiceNotificationsLabel}"
                           Margin="0,4,0,0" />
+
+                <StackPanel Spacing="6" Margin="0,4,0,0">
+                    <TextBlock Text="{x:Static res:SettingsStrings.AudioOutputDeviceLabel}" />
+                    <ComboBox x:Name="AudioOutputDeviceComboBox"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:AudioDevice">
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <Button x:Name="TestAudioButton"
+                        Classes="secondary"
+                        Content="{x:Static res:SettingsStrings.TestAudioButton}"
+                        Margin="0,4,0,0" />
             </StackPanel>
         </ScrollViewer>
 

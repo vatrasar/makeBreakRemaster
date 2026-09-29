@@ -74,5 +74,30 @@ namespace makeBreak.Src.Features.Settings.Resources
         {
             get { return ResourceManager.GetString("VoiceNotificationsLabel", resourceCulture); }
         }
+
+        public static string AudioOutputDeviceLabel
+        {
+            get { return ResourceManager.GetString("AudioOutputDeviceLabel", resourceCulture); }
+        }
+
+        public static string DefaultAudioOutput
+        {
+            get { return ResourceManager.GetString("DefaultAudioOutput", resourceCulture); }
+        }
+
+        public static string AllAudioOutputs
+        {
+            get { return ResourceManager.GetString("AllAudioOutputs", resourceCulture); }
+        }
+
+        public static string TestAudioButton
+        {
+            get { return ResourceManager.GetString("TestAudioButton", resourceCulture); }
+        }
+
+        public static string StopTestAudioButton
+        {
+            get { return ResourceManager.GetString("StopTestAudioButton", resourceCulture); }
+        }
     }
 }

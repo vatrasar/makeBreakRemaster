@@ -18,6 +18,25 @@
         <Setter Property="Background" Value="{DynamicResource SystemControlHighlightAccentBrush}" />
     </Style>
 
+    <Style Selector="Button.secondary">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListLowBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button.secondary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListMediumBrush}" />
+    </Style>
+    <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListMediumBrush}" />
+    </Style>
+
     <Style Selector="Button.ghost">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />

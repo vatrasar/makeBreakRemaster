@@ -14,4 +14,6 @@ public sealed record BreakConfig
     public int TimeForShortBreak { get; init; }
 
     public bool AreVoiceNotificationsEnabled { get; init; } = true;
+
+    public string AudioOutputDeviceId { get; init; } = AudioDevice.DefaultDeviceId;
 }

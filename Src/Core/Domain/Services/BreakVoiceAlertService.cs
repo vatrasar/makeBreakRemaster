@@ -1,6 +1,7 @@
 using makeBreak.Src.Core.Config;
 using makeBreak.Src.Core.Domain.Enums;
 using makeBreak.Src.Core.Domain.Interfaces;
+using makeBreak.Src.Core.Domain.Models;
 using Microsoft.Extensions.Options;
 
 namespace makeBreak.Src.Core.Domain.Services;
@@ -38,14 +39,20 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
         _coordinator.ConfirmationEnabledChanged += (_, _) => OnConfirmationEnabledChanged();
         _coordinator.BreakCountdownChanged += (_, _) => OnBreakCountdownChanged();
         _coordinator.BreakEnded += (_, _) => OnBreakEnded();
+        _audioPlayer.PlaybackFinished += (_, _) => PlaybackFinished?.Invoke(this, EventArgs.Empty);
     }
 
     public event EventHandler? MuteStateChanged;
 
+    public event EventHandler? PlaybackFinished;
+
     public bool IsMutedForCurrentBreak => _isMutedForCurrentBreak;
+
+    public bool IsAudioPlaying => _audioPlayer.IsPlaying;
 
     /// <summary>
     /// Mutes voice alerts for the active break session and stops currently playing audio.
+    /// Invoked by <c>BreakViewModel</c>.
     /// </summary>
     public void MuteCurrentBreak()
     {
@@ -61,6 +68,7 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
 
     /// <summary>
     /// Unmutes voice alerts for the active break session.
+    /// Invoked by <c>BreakViewModel</c>.
     /// </summary>
     public void UnmuteCurrentBreak()
     {
@@ -75,6 +83,7 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
 
     /// <summary>
     /// Toggles the temporary mute state for the active break session.
+    /// Invoked by <c>BreakViewModel</c>.
     /// </summary>
     public void ToggleMuteCurrentBreak()
     {
@@ -89,6 +98,7 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
 
     /// <summary>
     /// Determines the voice prompt stage corresponding to the break duration and elapsed overtime.
+    /// Invoked by <c>BreakVoiceAlertService</c> and test suites.
     /// </summary>
     public VoicePromptStage DetermineStage(int breakDurationSeconds, int overtimeSeconds)
     {
@@ -109,6 +119,27 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
 
         return VoicePromptStage.Initial;
     }
+
+    /// <summary>
+    /// Plays a sample voice prompt directed to the specified audio output device or "all".
+    /// Invoked by <c>SettingsViewModel</c>.
+    /// </summary>
+    public void PlayTestAlert(string? targetDeviceId = null)
+    {
+        string? audioPath = SelectRandomFile(InitialFolder);
+        if (audioPath == null)
+        {
+            return;
+        }
+
+        PlayToTarget(audioPath, targetDeviceId);
+    }
+
+    /// <summary>
+    /// Stops any currently playing voice alert or test alert.
+    /// Invoked by <c>SettingsViewModel</c>.
+    /// </summary>
+    public void StopTestAlert() => _audioPlayer.Stop();
 
     private void OnBreakStarted()
     {
@@ -186,8 +217,19 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
 
         if (audioPath != null)
         {
-            _audioPlayer.Play(audioPath);
+            PlayToTarget(audioPath, _coordinator.CurrentConfig.AudioOutputDeviceId);
         }
+    }
+
+    private void PlayToTarget(string audioPath, string? targetDeviceId)
+    {
+        if (string.IsNullOrWhiteSpace(targetDeviceId) || string.Equals(targetDeviceId, AudioDevice.DefaultDeviceId, StringComparison.OrdinalIgnoreCase))
+        {
+            _audioPlayer.Play(audioPath);
+            return;
+        }
+
+        _audioPlayer.Play(audioPath, targetDeviceId);
     }
 
     private static string GetFolderForStage(VoicePromptStage stage) => stage switch

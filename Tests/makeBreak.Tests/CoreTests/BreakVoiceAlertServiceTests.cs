@@ -237,4 +237,59 @@ public class BreakVoiceAlertServiceTests
 
         player.Verify(p => p.Play(It.IsAny<string>()), Times.Never);
     }
+
+    [Fact]
+    public void ConfirmationEnabled_WhenCustomAudioDeviceConfigured_PlaysAudioToTargetDevice()
+    {
+        var config = new BreakConfig
+        {
+            TimeToStartShortBreak = 2,
+            TimeForShortBreak = 2,
+            AreVoiceNotificationsEnabled = true,
+            AudioOutputDeviceId = "alsa_output.headphones",
+        };
+        BreakCoordinator coordinator = CreateCoordinator(config);
+        var player = new Mock<IAudioPlayer>();
+        string? targetDevice = null;
+        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>()))
+              .Callback<string, string?>((_, device) => targetDevice = device);
+
+        var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
+
+        coordinator.StartWork();
+        for (int i = 0; i < 4; i++)
+        {
+            coordinator.Tick();
+        }
+
+        Assert.Equal("alsa_output.headphones", targetDevice);
+    }
+
+    [Fact]
+    public void PlayTestAlert_PlaysAudioToSpecifiedTargetDevice()
+    {
+        var coordinator = CreateCoordinator(new BreakConfig());
+        var player = new Mock<IAudioPlayer>();
+        string? targetDevice = null;
+        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>()))
+              .Callback<string, string?>((_, device) => targetDevice = device);
+
+        var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
+
+        service.PlayTestAlert("all");
+
+        Assert.Equal("all", targetDevice);
+    }
+
+    [Fact]
+    public void StopTestAlert_InvokesAudioPlayerStop()
+    {
+        var coordinator = CreateCoordinator(new BreakConfig());
+        var player = new Mock<IAudioPlayer>();
+        var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
+
+        service.StopTestAlert();
+
+        player.Verify(p => p.Stop(), Times.Once);
+    }
 }

@@ -14,6 +14,8 @@ public sealed class AppConfig
  
     public bool AreVoiceNotificationsEnabled { get; set; } = true;
 
+    public string AudioOutputDeviceId { get; set; } = "default";
+
     public string VoicePromptsDirectory { get; set; } = "Assets/VoicePrompts";
 
     public string ConfigFileName { get; set; } = "conf.txt";
