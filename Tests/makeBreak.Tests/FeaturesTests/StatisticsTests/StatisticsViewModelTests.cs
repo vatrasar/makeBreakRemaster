@@ -183,6 +183,22 @@ public class StatisticsViewModelTests
         Assert.True(viewModel.State.Bars.All(bar => bar.WorkTimeLabel == "0h 0min"));
     }
 
+    [Fact]
+    public void SelectYear_WhenExecuted_ReturnsMonthlyBarsSortedFromNewestToOldest()
+    {
+        WorkDay[] days = [
+            new(FixedToday, 3600),
+            new(new DateOnly(2025, 4, 15), 1800)
+        ];
+        StatisticsViewModel viewModel = CreateViewModel(days, FixedToday);
+
+        Execute(viewModel.SelectYearCommand);
+
+        Assert.Equal(12, viewModel.State.Bars.Count);
+        Assert.Equal("1h 0min", viewModel.State.Bars.First().WorkTimeLabel);
+        Assert.Equal("0h 30min", viewModel.State.Bars.Last().WorkTimeLabel);
+    }
+
     private static void Execute(ReactiveCommand<Unit, Unit> command) => command.Execute(Unit.Default).Subscribe();
 
     private static StatisticsViewModel CreateViewModel(IReadOnlyList<WorkDay> days, DateOnly today)

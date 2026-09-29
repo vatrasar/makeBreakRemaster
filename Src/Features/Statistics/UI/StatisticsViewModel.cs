@@ -142,7 +142,7 @@ public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>
 
         var buckets = new List<WorkBucket>(YearMonths);
 
-        for (DateOnly month = startMonth; month <= endMonth; month = month.AddMonths(1))
+        for (DateOnly month = endMonth; month >= startMonth; month = month.AddMonths(-1))
         {
             int seconds = days
                 .Where(day => day.Date.Year == month.Year && day.Date.Month == month.Month)
