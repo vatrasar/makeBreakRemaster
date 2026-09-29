@@ -201,6 +201,66 @@ public class ConfigFileRepositoryTests
 
             Assert.NotNull(loaded);
             Assert.Equal("default", loaded!.AudioOutputDeviceId);
+            Assert.Equal(100, loaded.VoiceVolumePercent);
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    [Fact]
+    public void Save_thenLoad_roundTripsVoiceVolumePercent()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"conf_{Guid.NewGuid():N}.txt");
+
+        try
+        {
+            var repository = new ConfigFileRepository(path);
+            var config = new BreakConfig
+            {
+                TimeForLongBreak = 300,
+                TimeForShortBreak = 120,
+                TimeToStartLongBreak = 900,
+                TimeToStartShortBreak = 300,
+                AreVoiceNotificationsEnabled = true,
+                AudioOutputDeviceId = "default",
+                VoiceVolumePercent = 65,
+            };
+
+            repository.Save(config);
+
+            BreakConfig? loaded = repository.Load();
+
+            Assert.NotNull(loaded);
+            Assert.Equal(65, loaded!.VoiceVolumePercent);
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    [Fact]
+    public void Load_whenVolumeOutOfRange_clampsBetweenZeroAndHundred()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"conf_{Guid.NewGuid():N}.txt");
+
+        try
+        {
+            File.WriteAllLines(path, new[] { "300", "120", "900", "300", "True", "default", "150" });
+
+            var repository = new ConfigFileRepository(path);
+            BreakConfig? loaded = repository.Load();
+
+            Assert.NotNull(loaded);
+            Assert.Equal(100, loaded!.VoiceVolumePercent);
         }
         finally
         {

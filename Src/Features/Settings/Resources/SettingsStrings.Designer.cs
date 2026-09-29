@@ -99,5 +99,10 @@ namespace makeBreak.Src.Features.Settings.Resources
         {
             get { return ResourceManager.GetString("StopTestAudioButton", resourceCulture); }
         }
+
+        public static string VoiceVolumeLabel
+        {
+            get { return ResourceManager.GetString("VoiceVolumeLabel", resourceCulture); }
+        }
     }
 }

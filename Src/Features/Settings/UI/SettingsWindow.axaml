@@ -6,8 +6,8 @@
         x:Class="makeBreak.Src.Features.Settings.UI.SettingsWindow"
         Title="{x:Static res:SettingsStrings.WindowTitle}"
         Icon="/Assets/ikona.png"
-        Width="440"
-        Height="520"
+        Width="470"
+        Height="640"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
         ShowInTaskbar="False">
@@ -24,8 +24,9 @@
                    FontWeight="SemiBold" />
 
         <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="12" Margin="0,0,18,0">
                 <StackPanel Spacing="6">
                     <TextBlock Text="{x:Static res:SettingsStrings.TimeToStartLongBreakLabel}" />
                     <NumericUpDown x:Name="TimeToStartLongBreakInput" Minimum="1" Increment="1" />
@@ -60,6 +61,17 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+                </StackPanel>
+
+                <StackPanel Spacing="6" Margin="0,4,0,0">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0" Text="{x:Static res:SettingsStrings.VoiceVolumeLabel}" VerticalAlignment="Center" />
+                        <TextBlock x:Name="VoiceVolumePercentTextBlock" Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold" />
+                    </Grid>
+                    <Slider x:Name="VoiceVolumeSlider"
+                            Minimum="0"
+                            Maximum="100"
+                            HorizontalAlignment="Stretch" />
                 </StackPanel>
 
                 <Button x:Name="TestAudioButton"

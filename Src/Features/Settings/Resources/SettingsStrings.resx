@@ -56,4 +56,8 @@
   <data name="StopTestAudioButton" xml:space="preserve">
     <value>Stop test alert</value>
   </data>
+
+  <data name="VoiceVolumeLabel" xml:space="preserve">
+    <value>Voice alert volume</value>
+  </data>
 </root>

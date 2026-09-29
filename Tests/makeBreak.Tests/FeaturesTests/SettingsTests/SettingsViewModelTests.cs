@@ -110,13 +110,67 @@ public class SettingsViewModelTests
 
         vm.ToggleTestAudioCommand.Execute().Subscribe();
 
-        voiceAlertMock.Verify(v => v.PlayTestAlert("alsa_output.speakers"), Times.Once);
+        voiceAlertMock.Verify(v => v.PlayTestAlert("alsa_output.speakers", 100), Times.Once);
         Assert.True(vm.IsTestingAudio);
 
         vm.ToggleTestAudioCommand.Execute().Subscribe();
 
         voiceAlertMock.Verify(v => v.StopTestAlert(), Times.Once);
         Assert.False(vm.IsTestingAudio);
+    }
+
+    [Fact]
+    public void Constructor_LoadsVoiceVolumePercent_FromConfig()
+    {
+        var config = new BreakConfig { VoiceVolumePercent = 65 };
+        var coordinator = CreateCoordinator(config);
+        var voiceAlertMock = new Mock<IBreakVoiceAlertService>();
+        var audioDeviceMock = new Mock<IAudioDeviceService>();
+
+        var vm = new SettingsViewModel(coordinator, voiceAlertMock.Object, audioDeviceMock.Object);
+
+        Assert.Equal(65, vm.VoiceVolumePercent);
+    }
+
+    [Fact]
+    public void SaveSettings_PersistsUpdatedVoiceVolumePercent()
+    {
+        var mockRepo = new Mock<IConfigRepository>();
+        mockRepo.Setup(r => r.Load()).Returns(new BreakConfig { VoiceVolumePercent = 100 });
+        var configService = new ConfigService(Options.Create(new AppConfig()), mockRepo.Object);
+        var scheduler = new BreakScheduler();
+        var coordinator = new BreakCoordinator(scheduler, configService);
+
+        var voiceAlertMock = new Mock<IBreakVoiceAlertService>();
+        var audioDeviceMock = new Mock<IAudioDeviceService>();
+
+        var vm = new SettingsViewModel(coordinator, voiceAlertMock.Object, audioDeviceMock.Object);
+        vm.VoiceVolumePercent = 42;
+
+        vm.SaveSettingsCommand.Execute().Subscribe();
+
+        Assert.Equal(42, coordinator.CurrentConfig.VoiceVolumePercent);
+        mockRepo.Verify(r => r.Save(It.Is<BreakConfig>(c => c.VoiceVolumePercent == 42)), Times.Once);
+    }
+
+    [Fact]
+    public void ToggleTestAudio_PassesSelectedVoiceVolumePercent()
+    {
+        var coordinator = CreateCoordinator(new BreakConfig());
+        var voiceAlertMock = new Mock<IBreakVoiceAlertService>();
+        var audioDeviceMock = new Mock<IAudioDeviceService>();
+        audioDeviceMock.Setup(a => a.GetOutputDevices()).Returns(new List<AudioDevice>
+        {
+            new() { Id = "alsa_output.speakers", Name = "Built-in Speakers" },
+        });
+
+        var vm = new SettingsViewModel(coordinator, voiceAlertMock.Object, audioDeviceMock.Object);
+        vm.SelectedAudioDevice = vm.AvailableAudioDevices[2];
+        vm.VoiceVolumePercent = 35;
+
+        vm.ToggleTestAudioCommand.Execute().Subscribe();
+
+        voiceAlertMock.Verify(v => v.PlayTestAlert("alsa_output.speakers", 35), Times.Once);
     }
 
     [Fact]

@@ -44,6 +44,7 @@ public sealed class ConfigService
             TimeToStartShortBreak = appConfig.TimeToStartShortBreakSeconds,
             AreVoiceNotificationsEnabled = appConfig.AreVoiceNotificationsEnabled,
             AudioOutputDeviceId = appConfig.AudioOutputDeviceId,
+            VoiceVolumePercent = appConfig.VoiceVolumePercent,
         };
     }
 }

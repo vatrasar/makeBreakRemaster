@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using makeBreak.Src.Core.Domain.Interfaces;
 using makeBreak.Src.Core.Domain.Models;
 
@@ -41,23 +42,31 @@ public sealed class SystemAudioPlayer : IAudioPlayer, IDisposable
     /// Plays the audio file located at the specified file path using default routing.
     /// Invoked by <c>BreakVoiceAlertService</c>.
     /// </summary>
-    public void Play(string filePath) => Play(filePath, null);
+    public void Play(string filePath) => Play(filePath, null, 100);
 
     /// <summary>
     /// Plays the audio file located at the specified file path directed to a specific audio output device or "all".
     /// Invoked by <c>BreakVoiceAlertService</c>.
     /// </summary>
-    public void Play(string filePath, string? targetDeviceId)
+    public void Play(string filePath, string? targetDeviceId) => Play(filePath, targetDeviceId, 100);
+
+    /// <summary>
+    /// Plays the audio file located at the specified file path directed to a specific audio output device or "all" at the given volume percentage (0-100).
+    /// Invoked by <c>BreakVoiceAlertService</c>.
+    /// </summary>
+    public void Play(string filePath, string? targetDeviceId, int volumePercent)
     {
         if (string.IsNullOrWhiteSpace(_playerExecutable) || !File.Exists(filePath))
         {
             return;
         }
 
+        int clampedVolume = Math.Clamp(volumePercent, 0, 100);
+
         lock (_lock)
         {
             StopInternal(notifyFinished: false);
-            RoutePlayback(filePath, targetDeviceId);
+            RoutePlayback(filePath, targetDeviceId, clampedVolume);
         }
     }
 
@@ -81,57 +90,57 @@ public sealed class SystemAudioPlayer : IAudioPlayer, IDisposable
         }
     }
 
-    private void RoutePlayback(string filePath, string? targetDeviceId)
+    private void RoutePlayback(string filePath, string? targetDeviceId, int volumePercent)
     {
         if (string.Equals(targetDeviceId, AudioDevice.AllDevicesId, StringComparison.OrdinalIgnoreCase))
         {
-            PlayToAllOutputs(filePath);
+            PlayToAllOutputs(filePath, volumePercent);
             return;
         }
 
         if (string.IsNullOrWhiteSpace(targetDeviceId) ||
             string.Equals(targetDeviceId, AudioDevice.DefaultDeviceId, StringComparison.OrdinalIgnoreCase))
         {
-            StartProcess(filePath, null);
+            StartProcess(filePath, null, volumePercent);
             return;
         }
 
-        PlayToSingleOutput(filePath, targetDeviceId);
+        PlayToSingleOutput(filePath, targetDeviceId, volumePercent);
     }
 
-    private void PlayToAllOutputs(string filePath)
+    private void PlayToAllOutputs(string filePath, int volumePercent)
     {
         IReadOnlyList<AudioDevice> devices = _audioDeviceService.GetOutputDevices();
         if (devices.Count == 0)
         {
-            StartProcess(filePath, null);
+            StartProcess(filePath, null, volumePercent);
             return;
         }
 
         foreach (AudioDevice device in devices)
         {
-            StartProcess(filePath, device.Id);
+            StartProcess(filePath, device.Id, volumePercent);
         }
     }
 
-    private void PlayToSingleOutput(string filePath, string targetDeviceId)
+    private void PlayToSingleOutput(string filePath, string targetDeviceId, int volumePercent)
     {
         IReadOnlyList<AudioDevice> devices = _audioDeviceService.GetOutputDevices();
         if (devices.Count > 0 && devices.All(d => !string.Equals(d.Id, targetDeviceId, StringComparison.OrdinalIgnoreCase)))
         {
             Trace.TraceWarning("Configured audio output device {0} not found, falling back to default.", targetDeviceId);
-            StartProcess(filePath, null);
+            StartProcess(filePath, null, volumePercent);
             return;
         }
 
-        StartProcess(filePath, targetDeviceId);
+        StartProcess(filePath, targetDeviceId, volumePercent);
     }
 
-    private void StartProcess(string filePath, string? targetDeviceId)
+    private void StartProcess(string filePath, string? targetDeviceId, int volumePercent)
     {
         try
         {
-            ProcessStartInfo startInfo = CreateStartInfo(filePath, targetDeviceId);
+            ProcessStartInfo startInfo = CreateStartInfo(filePath, targetDeviceId, volumePercent);
             Process? process = new()
             {
                 StartInfo = startInfo,
@@ -174,7 +183,7 @@ public sealed class SystemAudioPlayer : IAudioPlayer, IDisposable
         }
     }
 
-    private ProcessStartInfo CreateStartInfo(string filePath, string? targetDeviceId)
+    private ProcessStartInfo CreateStartInfo(string filePath, string? targetDeviceId, int volumePercent)
     {
         ProcessStartInfo startInfo = new()
         {
@@ -185,11 +194,14 @@ public sealed class SystemAudioPlayer : IAudioPlayer, IDisposable
             RedirectStandardError = true,
         };
 
-        AppendPlayerArguments(startInfo, filePath, targetDeviceId);
+        startInfo.Environment["LC_ALL"] = "C";
+        startInfo.Environment["LC_NUMERIC"] = "C";
+
+        AppendPlayerArguments(startInfo, filePath, targetDeviceId, volumePercent);
         return startInfo;
     }
 
-    private void AppendPlayerArguments(ProcessStartInfo startInfo, string filePath, string? targetDeviceId)
+    private void AppendPlayerArguments(ProcessStartInfo startInfo, string filePath, string? targetDeviceId, int volumePercent)
     {
         string binaryName = Path.GetFileName(_playerExecutable!);
 
@@ -198,6 +210,7 @@ public sealed class SystemAudioPlayer : IAudioPlayer, IDisposable
             case "gst-play-1.0":
                 startInfo.ArgumentList.Add("--no-interactive");
                 startInfo.ArgumentList.Add("-q");
+                startInfo.ArgumentList.Add($"--volume={(volumePercent / 100.0).ToString(CultureInfo.InvariantCulture)}");
                 if (!string.IsNullOrWhiteSpace(targetDeviceId))
                 {
                     startInfo.ArgumentList.Add($"--audiosink=pipewiresink target={targetDeviceId}");
@@ -209,6 +222,8 @@ public sealed class SystemAudioPlayer : IAudioPlayer, IDisposable
                 startInfo.ArgumentList.Add("-autoexit");
                 startInfo.ArgumentList.Add("-loglevel");
                 startInfo.ArgumentList.Add("quiet");
+                startInfo.ArgumentList.Add("-volume");
+                startInfo.ArgumentList.Add(volumePercent.ToString(CultureInfo.InvariantCulture));
                 startInfo.ArgumentList.Add(filePath);
                 break;
             default:
@@ -217,6 +232,8 @@ public sealed class SystemAudioPlayer : IAudioPlayer, IDisposable
                     startInfo.ArgumentList.Add("--target");
                     startInfo.ArgumentList.Add(targetDeviceId);
                 }
+                startInfo.ArgumentList.Add("--volume");
+                startInfo.ArgumentList.Add((volumePercent / 100.0).ToString(CultureInfo.InvariantCulture));
                 startInfo.ArgumentList.Add(filePath);
                 break;
         }

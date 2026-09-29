@@ -15,6 +15,8 @@ public sealed class AppConfig
     public bool AreVoiceNotificationsEnabled { get; set; } = true;
 
     public string AudioOutputDeviceId { get; set; } = "default";
+ 
+    public int VoiceVolumePercent { get; set; } = 100;
 
     public string VoicePromptsDirectory { get; set; } = "Assets/VoicePrompts";
 

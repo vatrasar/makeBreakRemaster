@@ -61,7 +61,8 @@ public class BreakVoiceAlertServiceTests
         BreakCoordinator coordinator = CreateCoordinator(config);
         var player = new Mock<IAudioPlayer>();
         string? playedPath = null;
-        player.Setup(p => p.Play(It.IsAny<string>())).Callback<string>(path => playedPath = path);
+        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()))
+              .Callback<string, string?, int>((path, _, _) => playedPath = path);
 
         var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
 
@@ -94,7 +95,7 @@ public class BreakVoiceAlertServiceTests
             coordinator.Tick();
         }
 
-        player.Verify(p => p.Play(It.IsAny<string>()), Times.Never);
+        player.Verify(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Never);
     }
 
     [Fact]
@@ -116,7 +117,7 @@ public class BreakVoiceAlertServiceTests
             coordinator.Tick();
         }
 
-        player.Verify(p => p.Play(It.IsAny<string>()), Times.Once);
+        player.Verify(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Once);
 
         service.MuteCurrentBreak();
 
@@ -128,7 +129,7 @@ public class BreakVoiceAlertServiceTests
             coordinator.Tick();
         }
 
-        player.Verify(p => p.Play(It.IsAny<string>()), Times.Once);
+        player.Verify(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Once);
     }
 
     [Fact]
@@ -145,7 +146,8 @@ public class BreakVoiceAlertServiceTests
         BreakCoordinator coordinator = CreateCoordinator(config);
         var player = new Mock<IAudioPlayer>();
         List<string> playedPaths = new();
-        player.Setup(p => p.Play(It.IsAny<string>())).Callback<string>(path => playedPaths.Add(path));
+        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()))
+              .Callback<string, string?, int>((path, _, _) => playedPaths.Add(path));
 
         var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
 
@@ -235,7 +237,7 @@ public class BreakVoiceAlertServiceTests
             coordinator.Tick();
         }
 
-        player.Verify(p => p.Play(It.IsAny<string>()), Times.Never);
+        player.Verify(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Never);
     }
 
     [Fact]
@@ -251,8 +253,8 @@ public class BreakVoiceAlertServiceTests
         BreakCoordinator coordinator = CreateCoordinator(config);
         var player = new Mock<IAudioPlayer>();
         string? targetDevice = null;
-        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>()))
-              .Callback<string, string?>((_, device) => targetDevice = device);
+        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()))
+              .Callback<string, string?, int>((_, device, _) => targetDevice = device);
 
         var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
 
@@ -266,19 +268,62 @@ public class BreakVoiceAlertServiceTests
     }
 
     [Fact]
+    public void ConfirmationEnabled_WhenCustomVoiceVolumeConfigured_PlaysAudioWithConfiguredVolume()
+    {
+        var config = new BreakConfig
+        {
+            TimeToStartShortBreak = 2,
+            TimeForShortBreak = 2,
+            AreVoiceNotificationsEnabled = true,
+            VoiceVolumePercent = 45,
+        };
+        BreakCoordinator coordinator = CreateCoordinator(config);
+        var player = new Mock<IAudioPlayer>();
+        int playedVolume = -1;
+        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()))
+              .Callback<string, string?, int>((_, _, vol) => playedVolume = vol);
+
+        var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
+
+        coordinator.StartWork();
+        for (int i = 0; i < 4; i++)
+        {
+            coordinator.Tick();
+        }
+
+        Assert.Equal(45, playedVolume);
+    }
+
+    [Fact]
     public void PlayTestAlert_PlaysAudioToSpecifiedTargetDevice()
     {
         var coordinator = CreateCoordinator(new BreakConfig());
         var player = new Mock<IAudioPlayer>();
         string? targetDevice = null;
-        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>()))
-              .Callback<string, string?>((_, device) => targetDevice = device);
+        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()))
+              .Callback<string, string?, int>((_, device, _) => targetDevice = device);
 
         var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
 
         service.PlayTestAlert("all");
 
         Assert.Equal("all", targetDevice);
+    }
+
+    [Fact]
+    public void PlayTestAlert_WhenCustomVolumeSpecified_PlaysAudioWithSpecifiedVolume()
+    {
+        var coordinator = CreateCoordinator(new BreakConfig { VoiceVolumePercent = 30 });
+        var player = new Mock<IAudioPlayer>();
+        int playedVolume = -1;
+        player.Setup(p => p.Play(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>()))
+              .Callback<string, string?, int>((_, _, vol) => playedVolume = vol);
+
+        var service = new BreakVoiceAlertService(coordinator, player.Object, Options.Create(new AppConfig()));
+
+        service.PlayTestAlert("default", 75);
+
+        Assert.Equal(75, playedVolume);
     }
 
     [Fact]

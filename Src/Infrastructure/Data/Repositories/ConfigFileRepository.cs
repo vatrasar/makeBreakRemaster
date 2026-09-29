@@ -5,7 +5,7 @@ using makeBreak.Src.Core.Domain.RepositoryContracts;
 namespace makeBreak.Src.Infrastructure.Data.Repositories;
 
 /// <summary>
-/// Reads and writes schedule values, voice notification preference, and audio output selection to <c>conf.txt</c> located in the per-user data folder (~/.local/share/makeBreak on Linux).
+/// Reads and writes schedule values, voice notification preference, audio output selection, and voice alert volume to <c>conf.txt</c> located in the per-user data folder (~/.local/share/makeBreak on Linux).
 /// </summary>
 public sealed class ConfigFileRepository : IConfigRepository
 {
@@ -45,6 +45,9 @@ public sealed class ConfigFileRepository : IConfigRepository
         string audioOutputDeviceId = lines.Length >= 6 && !string.IsNullOrWhiteSpace(lines[5])
             ? lines[5].Trim()
             : AudioDevice.DefaultDeviceId;
+        int voiceVolumePercent = lines.Length >= 7 && int.TryParse(lines[6], NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedVolume)
+            ? Math.Clamp(parsedVolume, 0, 100)
+            : 100;
 
         return new BreakConfig
         {
@@ -54,6 +57,7 @@ public sealed class ConfigFileRepository : IConfigRepository
             TimeToStartShortBreak = timeToStartShortBreak,
             AreVoiceNotificationsEnabled = areVoiceNotificationsEnabled,
             AudioOutputDeviceId = audioOutputDeviceId,
+            VoiceVolumePercent = voiceVolumePercent,
         };
     }
 
@@ -71,6 +75,7 @@ public sealed class ConfigFileRepository : IConfigRepository
             config.TimeToStartShortBreak.ToString(CultureInfo.InvariantCulture),
             config.AreVoiceNotificationsEnabled.ToString(),
             config.AudioOutputDeviceId,
+            config.VoiceVolumePercent.ToString(CultureInfo.InvariantCulture),
         };
 
         File.WriteAllLines(_filePath, lines);

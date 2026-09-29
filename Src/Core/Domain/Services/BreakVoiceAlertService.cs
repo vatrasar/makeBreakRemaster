@@ -121,10 +121,10 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
     }
 
     /// <summary>
-    /// Plays a sample voice prompt directed to the specified audio output device or "all".
+    /// Plays a sample voice prompt directed to the specified audio output device or "all" with optional volume percentage (0-100).
     /// Invoked by <c>SettingsViewModel</c>.
     /// </summary>
-    public void PlayTestAlert(string? targetDeviceId = null)
+    public void PlayTestAlert(string? targetDeviceId = null, int? volumePercent = null)
     {
         string? audioPath = SelectRandomFile(InitialFolder);
         if (audioPath == null)
@@ -132,7 +132,8 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
             return;
         }
 
-        PlayToTarget(audioPath, targetDeviceId);
+        int volume = volumePercent ?? _coordinator.CurrentConfig.VoiceVolumePercent;
+        PlayToTarget(audioPath, targetDeviceId, volume);
     }
 
     /// <summary>
@@ -217,19 +218,17 @@ public sealed class BreakVoiceAlertService : IBreakVoiceAlertService
 
         if (audioPath != null)
         {
-            PlayToTarget(audioPath, _coordinator.CurrentConfig.AudioOutputDeviceId);
+            PlayToTarget(audioPath, _coordinator.CurrentConfig.AudioOutputDeviceId, _coordinator.CurrentConfig.VoiceVolumePercent);
         }
     }
 
-    private void PlayToTarget(string audioPath, string? targetDeviceId)
+    private void PlayToTarget(string audioPath, string? targetDeviceId, int volumePercent)
     {
-        if (string.IsNullOrWhiteSpace(targetDeviceId) || string.Equals(targetDeviceId, AudioDevice.DefaultDeviceId, StringComparison.OrdinalIgnoreCase))
-        {
-            _audioPlayer.Play(audioPath);
-            return;
-        }
+        string? resolvedDeviceId = string.IsNullOrWhiteSpace(targetDeviceId) || string.Equals(targetDeviceId, AudioDevice.DefaultDeviceId, StringComparison.OrdinalIgnoreCase)
+            ? null
+            : targetDeviceId;
 
-        _audioPlayer.Play(audioPath, targetDeviceId);
+        _audioPlayer.Play(audioPath, resolvedDeviceId, volumePercent);
     }
 
     private static string GetFolderForStage(VoicePromptStage stage) => stage switch

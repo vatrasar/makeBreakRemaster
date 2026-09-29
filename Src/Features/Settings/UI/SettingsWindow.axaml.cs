@@ -7,8 +7,8 @@ namespace makeBreak.Src.Features.Settings.UI;
 
 /// <summary>
 /// Settings dialog.
-/// Purpose: lets the user configure break schedule values, voice notifications, and the target audio output.
-/// Key UI elements: four NumericUpDown inputs, VoiceNotificationsCheckBox, AudioOutputDeviceComboBox, TestAudioButton, OK/Cancel buttons.
+/// Purpose: lets the user configure break schedule values, voice notifications, the target audio output, and voice alert volume.
+/// Key UI elements: four NumericUpDown inputs, VoiceNotificationsCheckBox, AudioOutputDeviceComboBox, VoiceVolumeSlider, VoiceVolumePercentTextBlock, TestAudioButton, OK/Cancel buttons.
 /// Navigate From: system tray menu (Settings).
 /// Navigate To: none.
 /// </summary>
@@ -40,6 +40,12 @@ public partial class SettingsWindow : ReactiveWindow<SettingsViewModel>
 
             this.OneWayBind(ViewModel, vm => vm.AreVoiceNotificationsEnabled, view => view.AudioOutputDeviceComboBox.IsEnabled);
 
+            this.Bind(ViewModel, vm => vm.VoiceVolumePercent, view => view.VoiceVolumeSlider.Value, ToDouble, ToIntFromDouble);
+
+            this.OneWayBind(ViewModel, vm => vm.VoiceVolumePercent, view => view.VoiceVolumePercentTextBlock.Text, v => $"{v}%");
+
+            this.OneWayBind(ViewModel, vm => vm.AreVoiceNotificationsEnabled, view => view.VoiceVolumeSlider.IsEnabled);
+
             this.OneWayBind(ViewModel, vm => vm.AreVoiceNotificationsEnabled, view => view.TestAudioButton.IsEnabled);
 
             this.OneWayBind(ViewModel, vm => vm.IsTestingAudio, view => view.TestAudioButton.Content, isTesting => isTesting ? SettingsStrings.StopTestAudioButton : SettingsStrings.TestAudioButton);
@@ -59,4 +65,8 @@ public partial class SettingsWindow : ReactiveWindow<SettingsViewModel>
     private static bool? ToNullableBool(bool value) => value;
 
     private static bool FromNullableBool(bool? value) => value ?? true;
+
+    private static double ToDouble(int value) => value;
+
+    private static int ToIntFromDouble(double value) => (int)Math.Clamp(Math.Round(value), 0, 100);
 }

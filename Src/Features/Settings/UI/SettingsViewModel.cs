@@ -11,7 +11,7 @@ namespace makeBreak.Src.Features.Settings.UI;
 
 /// <summary>
 /// View model for the settings dialog. Captures schedule values, voice notification preference,
-/// and audio output device selection. Allows triggering a test alert and persists settings through
+/// audio output device selection, and voice alert volume. Allows triggering a test alert and persists settings through
 /// the break coordinator.
 /// </summary>
 public partial class SettingsViewModel : ViewModelBase
@@ -36,6 +36,7 @@ public partial class SettingsViewModel : ViewModelBase
         TimeToStartShortBreakMinutes = SecondsToMinutes(config.TimeToStartShortBreak);
         TimeForShortBreakSeconds = config.TimeForShortBreak;
         AreVoiceNotificationsEnabled = config.AreVoiceNotificationsEnabled;
+        VoiceVolumePercent = config.VoiceVolumePercent;
 
         AvailableAudioDevices = BuildAvailableAudioDevices(_audioDeviceService.GetOutputDevices(), config.AudioOutputDeviceId);
         SelectedAudioDevice = ResolveInitialDevice(AvailableAudioDevices, config.AudioOutputDeviceId);
@@ -68,6 +69,9 @@ public partial class SettingsViewModel : ViewModelBase
     private bool _areVoiceNotificationsEnabled;
 
     [Reactive]
+    private int _voiceVolumePercent;
+
+    [Reactive]
     private AudioDevice? _selectedAudioDevice;
 
     [Reactive]
@@ -92,6 +96,7 @@ public partial class SettingsViewModel : ViewModelBase
             TimeForShortBreak = TimeForShortBreakSeconds,
             AreVoiceNotificationsEnabled = AreVoiceNotificationsEnabled,
             AudioOutputDeviceId = SelectedAudioDevice?.Id ?? AudioDevice.DefaultDeviceId,
+            VoiceVolumePercent = VoiceVolumePercent,
         });
 
         Saved?.Invoke(this, EventArgs.Empty);
@@ -107,7 +112,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
 
         string targetDeviceId = SelectedAudioDevice?.Id ?? AudioDevice.DefaultDeviceId;
-        _voiceAlertService.PlayTestAlert(targetDeviceId);
+        _voiceAlertService.PlayTestAlert(targetDeviceId, VoiceVolumePercent);
         IsTestingAudio = true;
     }
 

@@ -16,4 +16,6 @@ public sealed record BreakConfig
     public bool AreVoiceNotificationsEnabled { get; init; } = true;
 
     public string AudioOutputDeviceId { get; init; } = AudioDevice.DefaultDeviceId;
+
+    public int VoiceVolumePercent { get; init; } = 100;
 }

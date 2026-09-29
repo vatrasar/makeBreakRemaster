@@ -54,10 +54,10 @@ public interface IBreakVoiceAlertService
     VoicePromptStage DetermineStage(int breakDurationSeconds, int overtimeSeconds);
 
     /// <summary>
-    /// Plays a sample voice prompt directed to the specified audio output device or "all".
+    /// Plays a sample voice prompt directed to the specified audio output device or "all" with optional volume percentage (0-100).
     /// Invoked by <c>SettingsViewModel</c>.
     /// </summary>
-    void PlayTestAlert(string? targetDeviceId = null);
+    void PlayTestAlert(string? targetDeviceId = null, int? volumePercent = null);
 
     /// <summary>
     /// Stops any currently playing voice alert or test alert.
