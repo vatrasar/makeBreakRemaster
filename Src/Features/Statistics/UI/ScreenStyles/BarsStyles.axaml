@@ -1,10 +1,15 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="ProgressBar.work-bar">
-        <Setter Property="Height" Value="10" />
+        <Setter Property="Height" Value="8" />
+        <Setter Property="CornerRadius" Value="4" />
     </Style>
 
     <Style Selector="ProgressBar.work-bar.best">
         <Setter Property="Foreground" Value="{DynamicResource SuccessColor}" />
+    </Style>
+
+    <Style Selector="ProgressBar.work-bar.worst">
+        <Setter Property="Foreground" Value="{DynamicResource ErrorColor}" />
     </Style>
 </Styles>

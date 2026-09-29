@@ -15,6 +15,13 @@ public interface IWorkTimeRepository
     void AddWorkSeconds(DateOnly date, int seconds);
 
     /// <summary>
+    /// Adds the given number of wasted seconds to the record of the given day,
+    /// creating the record when it does not exist yet.
+    /// Invoked by <c>WorkTimeService</c> whenever accumulated wasted time is flushed.
+    /// </summary>
+    void AddWastedSeconds(DateOnly date, int seconds);
+
+    /// <summary>
     /// Returns the work time records whose date falls inside the given inclusive range.
     /// Invoked by <c>WorkTimeService</c> when reading the work time for the statistics window.
     /// </summary>

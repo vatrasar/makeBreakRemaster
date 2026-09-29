@@ -21,6 +21,7 @@ public sealed class MakeBreakDbContext : DbContext
             entity.HasKey(workDay => workDay.Id);
             entity.Property(workDay => workDay.Date).IsRequired();
             entity.HasIndex(workDay => workDay.Date).IsUnique();
+            entity.Property(workDay => workDay.WastedSeconds).HasDefaultValue(0);
         });
     }
 }

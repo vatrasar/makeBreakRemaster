@@ -113,4 +113,92 @@ public class WorkTimeServiceTests
 
         repository.Verify(r => r.AddWorkSeconds(It.IsAny<DateOnly>(), It.IsAny<int>()), Times.Never());
     }
+
+    [Fact]
+    public void RecordWastedSecond_whenNotOnBreak_doesNotAccumulate()
+    {
+        var scheduler = new Mock<IBreakScheduler>();
+        scheduler.SetupGet(s => s.State).Returns(SessionState.Working);
+        scheduler.SetupGet(s => s.OvertimeBreakSeconds).Returns(10);
+        var repository = new Mock<IWorkTimeRepository>();
+        var service = new WorkTimeService(scheduler.Object, repository.Object);
+
+        service.RecordWastedSecond();
+        scheduler.Raise(s => s.StateChanged += null, (object?)null, EventArgs.Empty);
+
+        repository.Verify(r => r.AddWastedSeconds(It.IsAny<DateOnly>(), It.IsAny<int>()), Times.Never());
+    }
+
+    [Fact]
+    public void RecordWastedSecond_whenBreakOvertimeIsZero_doesNotAccumulate()
+    {
+        var scheduler = new Mock<IBreakScheduler>();
+        scheduler.SetupGet(s => s.State).Returns(SessionState.OnShortBreak);
+        scheduler.SetupGet(s => s.OvertimeBreakSeconds).Returns(0);
+        var repository = new Mock<IWorkTimeRepository>();
+        var service = new WorkTimeService(scheduler.Object, repository.Object);
+
+        service.RecordWastedSecond();
+        scheduler.Raise(s => s.StateChanged += null, (object?)null, EventArgs.Empty);
+
+        repository.Verify(r => r.AddWastedSeconds(It.IsAny<DateOnly>(), It.IsAny<int>()), Times.Never());
+    }
+
+    [Fact]
+    public void RecordWastedSecond_whenInBreakOvertime_flushesOnStateChange()
+    {
+        var scheduler = new Mock<IBreakScheduler>();
+        scheduler.SetupGet(s => s.State).Returns(SessionState.OnShortBreak);
+        scheduler.SetupGet(s => s.OvertimeBreakSeconds).Returns(5);
+        var repository = new Mock<IWorkTimeRepository>();
+        var service = new WorkTimeService(scheduler.Object, repository.Object);
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+
+        for (int i = 0; i < 5; i++)
+        {
+            service.RecordWastedSecond();
+        }
+
+        scheduler.Raise(s => s.StateChanged += null, (object?)null, EventArgs.Empty);
+
+        repository.Verify(r => r.AddWastedSeconds(today, 5), Times.Once());
+    }
+
+    [Fact]
+    public void RecordWastedSecond_whenInBreakOvertime_flushesPeriodically()
+    {
+        var scheduler = new Mock<IBreakScheduler>();
+        scheduler.SetupGet(s => s.State).Returns(SessionState.OnLongBreak);
+        scheduler.SetupGet(s => s.OvertimeBreakSeconds).Returns(35);
+        var repository = new Mock<IWorkTimeRepository>();
+        var service = new WorkTimeService(scheduler.Object, repository.Object);
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+
+        for (int i = 0; i < 30; i++)
+        {
+            service.RecordWastedSecond();
+        }
+
+        repository.Verify(r => r.AddWastedSeconds(today, 30), Times.Once());
+    }
+
+    [Fact]
+    public void GetWorkDaysInRange_zeroFillsWastedSecondsWithoutRecords()
+    {
+        var scheduler = new Mock<IBreakScheduler>();
+        scheduler.Setup(s => s.State).Returns(SessionState.Paused);
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+        DateOnly fromDate = today.AddDays(-2);
+        var repository = new Mock<IWorkTimeRepository>();
+        repository.Setup(r => r.GetWorkDaysInRange(It.IsAny<DateOnly>(), It.IsAny<DateOnly>()))
+            .Returns(new[] { new WorkDay(today, 3600, 300) });
+        var service = new WorkTimeService(scheduler.Object, repository.Object);
+
+        IReadOnlyList<WorkDay> summary = service.GetWorkDaysInRange(fromDate, today);
+
+        Assert.Equal(3, summary.Count);
+        Assert.Equal(300, summary.First(day => day.Date == today).WastedSeconds);
+        Assert.Equal(0, summary.First(day => day.Date == today.AddDays(-1)).WastedSeconds);
+        Assert.Equal(0, summary.First(day => day.Date == today.AddDays(-2)).WastedSeconds);
+    }
 }

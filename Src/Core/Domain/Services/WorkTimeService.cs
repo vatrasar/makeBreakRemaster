@@ -6,9 +6,9 @@ using makeBreak.Src.Core.Domain.RepositoryContracts;
 namespace makeBreak.Src.Core.Domain.Services;
 
 /// <summary>
-/// Tracks accumulated work time (only seconds spent in the <see cref="SessionState.Working"/>
-/// state, so breaks and pauses never count) and provides zero-filled per-day work time records
-/// for any inclusive date range, persisted in SQLite.
+/// Tracks accumulated work time (seconds spent working) and wasted time (overtime seconds
+/// during breaks), providing zero-filled per-day records for any inclusive date range,
+/// persisted in SQLite.
 /// </summary>
 public sealed class WorkTimeService
 {
@@ -19,6 +19,7 @@ public sealed class WorkTimeService
     private readonly IWorkTimeRepository _repository;
 
     private int _pendingWorkSeconds;
+    private int _pendingWastedSeconds;
     private int _secondsSinceFlush;
     private DateOnly _currentDay;
 
@@ -53,23 +54,55 @@ public sealed class WorkTimeService
     }
 
     /// <summary>
-    /// Returns zero-filled work time records for every day in the given inclusive range.
+    /// Counts one second of wasted time when a break has exceeded its scheduled duration.
+    /// Invoked once per second by the main ticker.
+    /// </summary>
+    public void RecordWastedSecond()
+    {
+        if (_scheduler.State is not (SessionState.OnShortBreak or SessionState.OnLongBreak))
+        {
+            return;
+        }
+
+        if (_scheduler.OvertimeBreakSeconds <= 0)
+        {
+            return;
+        }
+
+        HandleDayRollover();
+        _pendingWastedSeconds++;
+        _secondsSinceFlush++;
+
+        if (_secondsSinceFlush >= FlushCadenceSeconds)
+        {
+            FlushPendingWork();
+        }
+    }
+
+    /// <summary>
+    /// Returns zero-filled work and wasted time records for every day in the given inclusive range.
     /// Invoked by the statistics window.
     /// </summary>
     public IReadOnlyList<WorkDay> GetWorkDaysInRange(DateOnly fromDate, DateOnly toDate)
     {
         FlushPendingWork();
 
-        Dictionary<DateOnly, int> secondsByDay = _repository
+        Dictionary<DateOnly, WorkDay> daysByDate = _repository
             .GetWorkDaysInRange(fromDate, toDate)
-            .ToDictionary(day => day.Date, day => day.WorkSeconds);
+            .ToDictionary(day => day.Date);
 
         var result = new List<WorkDay>();
 
         for (DateOnly day = fromDate; day <= toDate; day = day.AddDays(1))
         {
-            secondsByDay.TryGetValue(day, out int weekdaySeconds);
-            result.Add(new WorkDay(day, weekdaySeconds));
+            if (daysByDate.TryGetValue(day, out WorkDay? existingDay))
+            {
+                result.Add(existingDay);
+            }
+            else
+            {
+                result.Add(new WorkDay(day, 0, 0));
+            }
         }
 
         return result;
@@ -88,10 +121,7 @@ public sealed class WorkTimeService
 
     private void OnStateChanged()
     {
-        if (_scheduler.State != SessionState.Working)
-        {
-            FlushPendingWork();
-        }
+        FlushPendingWork();
     }
 
     private void HandleDayRollover()
@@ -109,13 +139,18 @@ public sealed class WorkTimeService
 
     private void FlushPendingWork()
     {
-        if (_pendingWorkSeconds <= 0)
+        if (_pendingWorkSeconds > 0)
         {
-            return;
+            _repository.AddWorkSeconds(_currentDay, _pendingWorkSeconds);
+            _pendingWorkSeconds = 0;
         }
 
-        _repository.AddWorkSeconds(_currentDay, _pendingWorkSeconds);
-        _pendingWorkSeconds = 0;
+        if (_pendingWastedSeconds > 0)
+        {
+            _repository.AddWastedSeconds(_currentDay, _pendingWastedSeconds);
+            _pendingWastedSeconds = 0;
+        }
+
         _secondsSinceFlush = 0;
     }
 }

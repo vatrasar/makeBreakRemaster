@@ -4,6 +4,7 @@ using makeBreak.Src.Core.Domain.Models;
 using makeBreak.Src.Core.Domain.RepositoryContracts;
 using makeBreak.Src.Core.Domain.Services;
 using makeBreak.Src.Features.Statistics.Domain.Enums;
+using makeBreak.Src.Features.Statistics.Domain.Models;
 using makeBreak.Src.Features.Statistics.UI;
 using Moq;
 using ReactiveUI;
@@ -17,12 +18,91 @@ public class StatisticsViewModelTests
     private static readonly DateOnly FixedToday = new(2026, 3, 10);
 
     [Fact]
-    public void Constructor_DefaultsToWeekPeriod_ReturnsSevenDailyBars()
+    public void Constructor_DefaultsToWeekPeriodAndWorkMode_ReturnsSevenDailyBars()
     {
         StatisticsViewModel viewModel = CreateViewModel(Array.Empty<WorkDay>(), FixedToday);
 
         Assert.Equal(StatisticsPeriod.Week, viewModel.State.Period);
+        Assert.Equal(StatisticsMode.WorkTime, viewModel.State.Mode);
         Assert.Equal(7, viewModel.State.Bars.Count);
+        Assert.Contains("Total work time:", viewModel.State.TotalTimeLabel);
+    }
+
+    [Fact]
+    public void SelectWastedMode_SwitchesModeAndFormatsTotalWastedTime()
+    {
+        StatisticsViewModel viewModel = CreateViewModel(Array.Empty<WorkDay>(), FixedToday);
+
+        Execute(viewModel.SelectWastedModeCommand);
+
+        Assert.Equal(StatisticsMode.WastedTime, viewModel.State.Mode);
+        Assert.Contains("Total wasted time:", viewModel.State.TotalTimeLabel);
+    }
+
+    [Fact]
+    public void SelectWastedMode_Week_AggregatesWastedSecondsAndSetsWorstBar()
+    {
+        WorkDay[] days = [
+            new(FixedToday, 3600, 1200),
+            new(FixedToday.AddDays(-1), 7200, 300)
+        ];
+        StatisticsViewModel viewModel = CreateViewModel(days, FixedToday);
+
+        Execute(viewModel.SelectWastedModeCommand);
+
+        Assert.Equal(7, viewModel.State.Bars.Count);
+        WorkBarEntry todayBar = viewModel.State.Bars.Last();
+        Assert.Equal("0h 20min", todayBar.WorkTimeLabel);
+        Assert.True(todayBar.IsWorst);
+        Assert.False(todayBar.IsBest);
+    }
+
+    [Fact]
+    public void SelectWastedMode_Month_AggregatesWastedSecondsPerWeek()
+    {
+        DateOnly monday = new(FixedToday.Year, FixedToday.Month, 2);
+        WorkDay[] days = [
+            new(monday, 0, 180),
+            new(monday.AddDays(1), 0, 120)
+        ];
+        StatisticsViewModel viewModel = CreateViewModel(days, FixedToday);
+
+        Execute(viewModel.SelectWastedModeCommand);
+        Execute(viewModel.SelectMonthCommand);
+
+        Assert.Contains(viewModel.State.Bars, bar => bar.WorkTimeLabel == "0h 5min");
+    }
+
+    [Fact]
+    public void SelectWastedMode_Year_AggregatesWastedSecondsPerMonth()
+    {
+        DateOnly monthDay = new(FixedToday.Year, FixedToday.Month, 15);
+        WorkDay[] days = [
+            new(monthDay, 0, 3600),
+            new(monthDay.AddDays(1), 0, 1800)
+        ];
+        StatisticsViewModel viewModel = CreateViewModel(days, FixedToday);
+
+        Execute(viewModel.SelectWastedModeCommand);
+        Execute(viewModel.SelectYearCommand);
+
+        Assert.Equal(12, viewModel.State.Bars.Count);
+        Assert.Contains(viewModel.State.Bars, bar => bar.WorkTimeLabel == "1h 30min");
+    }
+
+    [Fact]
+    public void SelectWorkMode_SwitchesBackFromWastedMode()
+    {
+        WorkDay[] days = [new(FixedToday, 3600, 600)];
+        StatisticsViewModel viewModel = CreateViewModel(days, FixedToday);
+
+        Execute(viewModel.SelectWastedModeCommand);
+        Assert.Equal(StatisticsMode.WastedTime, viewModel.State.Mode);
+
+        Execute(viewModel.SelectWorkModeCommand);
+        Assert.Equal(StatisticsMode.WorkTime, viewModel.State.Mode);
+        Assert.Equal("1h 0min", viewModel.State.Bars.Last().WorkTimeLabel);
+        Assert.Contains("Total work time:", viewModel.State.TotalTimeLabel);
     }
 
     [Fact]

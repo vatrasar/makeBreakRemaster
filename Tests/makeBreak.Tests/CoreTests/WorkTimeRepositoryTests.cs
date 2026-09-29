@@ -36,6 +36,36 @@ public class WorkTimeRepositoryTests
     }
 
     [Fact]
+    public void AddWastedSeconds_whenRecordMissing_createsRecordWithZeroWorkSeconds()
+    {
+        using TestDbContext testDb = TestDbContext.Create();
+        DateOnly date = DateOnly.FromDateTime(DateTime.Now);
+
+        testDb.Repository.AddWastedSeconds(date, 150);
+
+        IReadOnlyList<WorkDay> loaded = testDb.Repository.GetWorkDaysInRange(date, date);
+        WorkDay day = Assert.Single(loaded);
+        Assert.Equal(0, day.WorkSeconds);
+        Assert.Equal(150, day.WastedSeconds);
+    }
+
+    [Fact]
+    public void AddWastedSeconds_whenRecordExists_accumulatesSeconds()
+    {
+        using TestDbContext testDb = TestDbContext.Create();
+        DateOnly date = DateOnly.FromDateTime(DateTime.Now);
+
+        testDb.Repository.AddWorkSeconds(date, 200);
+        testDb.Repository.AddWastedSeconds(date, 100);
+        testDb.Repository.AddWastedSeconds(date, 50);
+
+        IReadOnlyList<WorkDay> loaded = testDb.Repository.GetWorkDaysInRange(date, date);
+        WorkDay day = Assert.Single(loaded);
+        Assert.Equal(200, day.WorkSeconds);
+        Assert.Equal(150, day.WastedSeconds);
+    }
+
+    [Fact]
     public void GetWorkDaysInRange_filtersByRange()
     {
         using TestDbContext testDb = TestDbContext.Create();

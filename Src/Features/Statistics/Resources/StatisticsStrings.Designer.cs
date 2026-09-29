@@ -75,6 +75,26 @@ namespace makeBreak.Src.Features.Statistics.Resources
             get { return ResourceManager.GetString("YearPeriodLabel", resourceCulture); }
         }
 
+        public static string WorkModeLabel
+        {
+            get { return ResourceManager.GetString("WorkModeLabel", resourceCulture); }
+        }
+
+        public static string WastedModeLabel
+        {
+            get { return ResourceManager.GetString("WastedModeLabel", resourceCulture); }
+        }
+
+        public static string TotalWorkTimeFormat
+        {
+            get { return ResourceManager.GetString("TotalWorkTimeFormat", resourceCulture); }
+        }
+
+        public static string TotalWastedTimeFormat
+        {
+            get { return ResourceManager.GetString("TotalWastedTimeFormat", resourceCulture); }
+        }
+
         public static string TotalTimeFormat
         {
             get { return ResourceManager.GetString("TotalTimeFormat", resourceCulture); }

@@ -37,6 +37,22 @@
     <value>Year</value>
   </data>
 
+  <data name="WorkModeLabel" xml:space="preserve">
+    <value>Work time</value>
+  </data>
+
+  <data name="WastedModeLabel" xml:space="preserve">
+    <value>Wasted time</value>
+  </data>
+
+  <data name="TotalWorkTimeFormat" xml:space="preserve">
+    <value>Total work time: {0}</value>
+  </data>
+
+  <data name="TotalWastedTimeFormat" xml:space="preserve">
+    <value>Total wasted time: {0}</value>
+  </data>
+
   <data name="TotalTimeFormat" xml:space="preserve">
     <value>Total work time: {0}</value>
   </data>

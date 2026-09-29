@@ -5,7 +5,7 @@ namespace makeBreak.Src.Infrastructure.Navigation;
 
 /// <summary>
 /// Drives the break schedule one tick per second while the application runs
-/// and records each working second as work time.
+/// and records work time and break overtime (wasted time).
 /// </summary>
 public sealed class BreakTicker : IDisposable
 {
@@ -33,5 +33,6 @@ public sealed class BreakTicker : IDisposable
     {
         _workTimeService.RecordWorkSecond();
         _coordinator.Tick();
+        _workTimeService.RecordWastedSecond();
     }
 }

@@ -13,19 +13,23 @@ namespace makeBreak.Src.Features.Statistics.UI;
 
 public sealed record StatisticsState
 {
+    public StatisticsMode Mode { get; init; } = StatisticsMode.WorkTime;
+
     public StatisticsPeriod Period { get; init; } = StatisticsPeriod.Week;
 
     public string SectionTitle { get; init; } = string.Empty;
 
     public ImmutableList<WorkBarEntry> Bars { get; init; } = ImmutableList<WorkBarEntry>.Empty;
 
-    public string TotalWorkTimeLabel { get; init; } = string.Empty;
+    public string TotalTimeLabel { get; init; } = string.Empty;
+
+    public string TotalWorkTimeLabel => TotalTimeLabel;
 }
 
 /// <summary>
-/// View model for the statistics window. Builds the work time bars for the selected
-/// period (week, current month or last twelve months) from the SQLite-backed work
-/// time service, zero-filling periods without work.
+/// View model for the statistics window. Builds the work time or wasted time bars for the
+/// selected period (week, current month or last twelve months) from the SQLite-backed work
+/// time service, zero-filling periods without activity.
 /// </summary>
 public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>, IActivatableViewModel
 {
@@ -52,6 +56,12 @@ public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>
     public ViewModelActivator Activator { get; } = new();
 
     [ReactiveCommand]
+    private void SelectWorkMode() => SelectMode(StatisticsMode.WorkTime);
+
+    [ReactiveCommand]
+    private void SelectWastedMode() => SelectMode(StatisticsMode.WastedTime);
+
+    [ReactiveCommand]
     private void SelectWeek() => SelectPeriod(StatisticsPeriod.Week);
 
     [ReactiveCommand]
@@ -59,6 +69,12 @@ public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>
 
     [ReactiveCommand]
     private void SelectYear() => SelectPeriod(StatisticsPeriod.Year);
+
+    private void SelectMode(StatisticsMode mode)
+    {
+        UpdateState(s => s with { Mode = mode });
+        Refresh();
+    }
 
     private void SelectPeriod(StatisticsPeriod period)
     {
@@ -83,13 +99,17 @@ public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>
             .Select(bucket => BuildEntry(bucket, maxSeconds))
             .ToImmutableList();
         int totalSeconds = buckets.Sum(bucket => bucket.Seconds);
+        string format = State.Mode == StatisticsMode.WorkTime
+            ? StatisticsStrings.TotalWorkTimeFormat
+            : StatisticsStrings.TotalWastedTimeFormat;
 
         UpdateState(s => s with
         {
+            Mode = State.Mode,
             Period = State.Period,
             SectionTitle = BuildSectionTitle(today),
             Bars = entries,
-            TotalWorkTimeLabel = string.Format(StatisticsStrings.TotalTimeFormat, FormatDuration(totalSeconds)),
+            TotalTimeLabel = string.Format(format, FormatDuration(totalSeconds)),
         });
     }
 
@@ -99,7 +119,7 @@ public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>
 
         return _workTimeService
             .GetWorkDaysInRange(fromDate, today)
-            .Select(day => new WorkBucket(BuildDayLabel(day.Date), day.WorkSeconds))
+            .Select(day => new WorkBucket(BuildDayLabel(day.Date), GetSecondsForDay(day)))
             .ToList();
     }
 
@@ -126,7 +146,7 @@ public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>
         {
             int seconds = days
                 .Where(day => day.Date.Year == month.Year && day.Date.Month == month.Month)
-                .Sum(day => day.WorkSeconds);
+                .Sum(day => GetSecondsForDay(day));
             buckets.Add(new WorkBucket(BuildMonthLabel(month), seconds));
         }
 
@@ -139,8 +159,13 @@ public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>
             .GroupBy(day => StartOfWeek(day.Date))
             .Select(week => new WorkBucket(
                 BuildWeekLabel(week.Min(day => day.Date), week.Max(day => day.Date)),
-                week.Sum(day => day.WorkSeconds)))
+                week.Sum(day => GetSecondsForDay(day))))
             .ToList();
+    }
+
+    private int GetSecondsForDay(WorkDay day)
+    {
+        return State.Mode == StatisticsMode.WorkTime ? day.WorkSeconds : day.WastedSeconds;
     }
 
     private static string BuildDayLabel(DateOnly date)
@@ -176,12 +201,13 @@ public sealed partial class StatisticsViewModel : ViewModelBase<StatisticsState>
         return date.AddDays(-daysSinceMonday);
     }
 
-    private static WorkBarEntry BuildEntry(WorkBucket bucket, int maxSeconds)
+    private WorkBarEntry BuildEntry(WorkBucket bucket, int maxSeconds)
     {
         double barPercent = maxSeconds == 0 ? 0 : (double)bucket.Seconds / maxSeconds * MaxBarPercent;
-        bool isBest = maxSeconds > 0 && bucket.Seconds == maxSeconds;
+        bool isBest = State.Mode == StatisticsMode.WorkTime && maxSeconds > 0 && bucket.Seconds == maxSeconds;
+        bool isWorst = State.Mode == StatisticsMode.WastedTime && maxSeconds > 0 && bucket.Seconds == maxSeconds;
 
-        return new WorkBarEntry(bucket.Label, FormatDuration(bucket.Seconds), barPercent, isBest);
+        return new WorkBarEntry(bucket.Label, FormatDuration(bucket.Seconds), barPercent, isBest, isWorst);
     }
 
     private static string FormatDuration(int seconds)
